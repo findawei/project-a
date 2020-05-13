@@ -13,30 +13,42 @@ router.get('/',  (req, res) => {
         .then(events => res.json(events));
 });
 
-// @route   GET api/events/:id
-// @desc    Get specific event
+// @route   get api/events/:id
+// @desc    get specific event
 // @access  Public
 router.get('/:id',  (req, res) => {
     Event.findById(req.params.id)
         .then(event => res.json(event));
 });
-
-
 // @route   POST api/events/
 // @desc    POST event
 // @access  Public
 router.post('/', (req, res) => {
-    const newEvent = new Event({
-        title: req.body.title,
-        location: req.body.location,
-        dateStart: req.body.dateStart,
-        dateEnd: req.body.dateEnd,
-        attendee: req.body.attendee
-
-    });
+    const newEvent = new Event(req.body
+        // title: req.body.title,
+        // location: req.body.location,
+        // dateStart: req.body.dateStart,
+        // dateEnd: req.body.dateEnd,
+        // attendee: req.body.attendee
+    );
     newEvent.save().then(event => res.json(event));
 });
-
+// @route   PUT api/events/:id
+// @desc    Update specific
+// @access  Public
+router.route('/:id').put((req, res, next) => {
+    Event.findOneAndUpdate(req.params.id, {
+      $set: req.body
+    }, (error, event) => {
+      if (error) {
+        return next(error);
+        console.log(error)
+      } else {
+        res.json(event)
+        console.log("Event updated!")
+      }
+    })
+  })
 // @route   DELETE api/events/:id
 // @desc    DELETE events
 // @access  Public
