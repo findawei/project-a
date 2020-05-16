@@ -9,7 +9,7 @@ const EventSchema = new Schema({
   },
   location: {
     type: String,
-    required: true
+    required: false
   },
   dateStart: {
     type: Date,
