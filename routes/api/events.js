@@ -62,6 +62,22 @@ router.put('/:id', (req, res) => {
       }
     })
   })
+//UPDATE arrivalTime
+// @route   PUT api/events/:id
+// @desc    Update specific
+// @access  Public
+router.put('/log/:id', (req, res) => {
+  Event.findOneAndUpdate({_id: req.params.id}, {
+    arrivalTime: req.body.arrivalTime,
+  },{new: true}, (error, event) => {
+    if (error) {
+      return next(error)
+    } else {
+      res.json(event)
+      // console.log(event)
+    }
+  })
+})
 // @route   DELETE api/events/:id
 // @desc    DELETE events
 // @access  Public

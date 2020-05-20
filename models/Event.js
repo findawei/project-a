@@ -22,6 +22,10 @@ const EventSchema = new Schema({
   attendee: {
     type: String,
     required: false
+  },
+  arrivalTime: {
+    type: Date,
+    required: false
   }
 });
 
