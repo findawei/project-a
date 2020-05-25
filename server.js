@@ -6,6 +6,11 @@ const events = require('./routes/api/events')
 const app = express()
 
 //body parser middleware
+app.use(
+    bodyParser.urlencoded({
+      extended: false
+    })
+  );
 app.use(bodyParser.json());
 
 //connect to db

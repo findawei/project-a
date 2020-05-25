@@ -46,7 +46,7 @@ try {
 // @route   PUT api/events/:id
 // @desc    Update specific
 // @access  Public
-router.put('/:id', (req, res) => {
+router.put('/:id', async (req, res) => {
     Event.findOneAndUpdate({_id: req.params.id}, {
       title: req.body.title,
       location: req.body.location,
@@ -66,7 +66,7 @@ router.put('/:id', (req, res) => {
 // @route   PUT api/events/:id
 // @desc    Update specific
 // @access  Public
-router.put('/log/:id', (req, res) => {
+router.put('/log/:id', async (req, res) => {
   Event.findOneAndUpdate({_id: req.params.id}, {
     arrivalTime: req.body.arrivalTime,
   },{new: true}, (error, event) => {
