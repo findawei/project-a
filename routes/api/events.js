@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
-
+const auth = require('../../middleware/auth')
 const Event = require('../../models/Event');
 
 // @route   GET api/events/
-// @desc    Get events
-// @access  Public
-router.get('/', async (req, res) => {
+// @desc    Get all events for specific user
+// @access  Private
+router.get('/', auth, async (req, res) => {
 try {
   const events = await Event.find();
   if (!events) throw Error('No items');
@@ -16,17 +16,19 @@ try {
   res.status(400).json({ msg: e.message });
 }
 });
+
+
 // @route   get api/events/:id
 // @desc    get specific event
-// @access  Public
-router.get('/:id',  (req, res) => {
+// @access  Private
+router.get('/:id', auth, (req, res) => {
     Event.findById(req.params.id)
         .then(event => res.json(event));
 });
 // @route   POST api/events/
 // @desc    POST event
-// @access  Public
-router.post('/', async (req, res) => {
+// @access  Private
+router.post('/', auth, async (req, res) => {
     const newEvent = new Event({
         title: req.body.title,
         location: req.body.location,
@@ -45,8 +47,8 @@ try {
 });
 // @route   PUT api/events/:id
 // @desc    Update specific
-// @access  Public
-router.put('/:id', async (req, res) => {
+// @access  Private
+router.put('/:id', auth, async (req, res) => {
     Event.findOneAndUpdate({_id: req.params.id}, {
       title: req.body.title,
       location: req.body.location,
@@ -65,8 +67,8 @@ router.put('/:id', async (req, res) => {
 //UPDATE arrivalTime
 // @route   PUT api/events/:id
 // @desc    Update specific
-// @access  Public
-router.put('/log/:id', async (req, res) => {
+// @access  Private
+router.put('/log/:id', auth, async (req, res) => {
   Event.findOneAndUpdate({_id: req.params.id}, {
     arrivalTime: req.body.arrivalTime,
   },{new: true}, (error, event) => {
@@ -80,8 +82,8 @@ router.put('/log/:id', async (req, res) => {
 })
 // @route   DELETE api/events/:id
 // @desc    DELETE events
-// @access  Public
-router.delete('/:id', async (req, res) => {
+// @access  Private
+router.delete('/:id', auth, async (req, res) => {
   try {  
   const event = await Event.findById(req.params.id);
   if (!event) throw Error('No event found');
