@@ -4,9 +4,9 @@ const auth = require('../../middleware/auth')
 const Event = require('../../models/Event');
 
 // @route   GET api/events/
-// @desc    Get all events for specific user
+// @desc    Get all events
 // @access  Private
-router.get('/', auth, async (req, res) => {
+router.get('/', async (req, res) => {
 try {
   const events = await Event.find();
   if (!events) throw Error('No items');
@@ -16,8 +16,6 @@ try {
   res.status(400).json({ msg: e.message });
 }
 });
-
-
 // @route   get api/events/:id
 // @desc    get specific event
 // @access  Private
