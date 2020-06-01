@@ -6,7 +6,7 @@ const Event = require('../../models/Event');
 // @route   GET api/events/
 // @desc    Get all events
 // @access  Private
-router.get('/', async (req, res) => {
+router.get('/', auth, async (req, res) => {
 try {
   const events = await Event.find();
   if (!events) throw Error('No items');
