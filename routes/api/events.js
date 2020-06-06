@@ -2,15 +2,16 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../../middleware/auth')
 const Event = require('../../models/Event');
+const User = require('../../models/User');
 
 // @route   GET api/events/
-// @desc    Get all events
+// @desc    Get all events for a specific user
 // @access  Private
 router.get('/', auth, async (req, res) => {
-try {
-  const events = await Event.find();
+  try {
+  const events = await Event.find({user: req.user.id}).sort({
+    date: -1,});
   if (!events) throw Error('No items');
-
   res.status(200).json(events);
 } catch (e) {
   res.status(400).json({ msg: e.message });
@@ -32,7 +33,8 @@ router.post('/', auth, async (req, res) => {
         location: req.body.location,
         dateStart: req.body.dateStart,
         dateEnd: req.body.dateEnd,
-        attendee: req.body.attendee
+        attendee: req.body.attendee, 
+        user: req.user.id
     });
 try {
   const event = await newEvent.save();
