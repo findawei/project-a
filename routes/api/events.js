@@ -28,25 +28,32 @@ router.get('/:id', auth, (req, res) => {
 // @desc    POST event
 // @access  Private
 router.post('/', auth, async (req, res) => {
+  const {title, location, dateStart, dateEnd, attendee} = req.body
+
+  try{  
+    const attendeeRegistered = await User.findOne({ email });
+    if(!attendeeRegistered) throw Error('User doesnt exist');
+
     const newEvent = new Event({
-        title: req.body.title,
-        location: req.body.location,
-        dateStart: req.body.dateStart,
-        dateEnd: req.body.dateEnd,
-        attendee: req.body.attendee, 
+        title,
+        location,
+        dateStart,
+        dateEnd,
+        attendee, 
         user: req.user.id
     });
-try {
-  const event = await newEvent.save();
-  if (!event) throw Error('Something went wrong saving the event');
 
-  res.status(200).json(event);
-} catch (e) {
+    const event = await newEvent.save();
+    if (!event) throw Error('Something went wrong saving the event');
+
+    res.status(200).json(event);
+    } 
+  catch (e) {
   res.status(400).json({ msg: e.message });
 }
 });
 // @route   PUT api/events/:id
-// @desc    Update specific
+// @desc    Update specific event
 // @access  Private
 router.put('/:id', auth, async (req, res) => {
     Event.findOneAndUpdate({_id: req.params.id}, {
