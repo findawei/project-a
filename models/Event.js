@@ -23,10 +23,20 @@ const EventSchema = new Schema({
     type: Date,
     required: true
   },
-  attendee: {
-    type: String,
-    required: false
-  },
+  attendee:[ 
+    {
+      email: {
+        type: String,
+        required: true
+      },
+      name: {
+        type: String,
+        required: true
+      },
+      status: {
+        type: String
+      }
+    }],
   arrivalTime: {
     type: Date,
     required: false
