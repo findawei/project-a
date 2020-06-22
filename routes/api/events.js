@@ -3,7 +3,6 @@ const router = express.Router();
 const auth = require('../../middleware/auth')
 const Event = require('../../models/Event');
 const User = require('../../models/User');
-
 // @route   GET api/events/
 // @desc    Get all events for a specific user
 // @access  Private
@@ -42,7 +41,7 @@ router.get('/:id', auth, (req, res) => {
 // @desc    POST event
 // @access  Private
 router.post('/', auth, async (req, res) => {
-  const {title, location, dateStart, dateEnd} = req.body
+  const {title, location, dateStart, dateEnd, attendee:[{email, name, status}]} = req.body
 
   try{  
     const newEvent = new Event({
@@ -51,6 +50,7 @@ router.post('/', auth, async (req, res) => {
         dateStart,
         dateEnd,
         user: req.user.id, 
+        attendee: [{email, name, status}]
     });
 
     const event = await newEvent.save();
@@ -68,59 +68,58 @@ router.post('/', auth, async (req, res) => {
 }
 });
 
-// @route    PUT api/events/attendee
-// @desc     Add event attendee
-// @access   Private
-router.put( '/attendee', auth, async (req, res) => {
-    const {
-      email,
-      name,
-      status
-    } = req.body;
+// // @route    POST api/events/attendee
+// // @desc     Add event attendee
+// // @access   Private
+// router.post('/events/attendee', auth, async (req, res) => {
+//     const { email, name, status } = req.body;
 
-    const newAttendee = {
-      email,
-      name,
-      status
-    };
+//     const newAtt ={
+//       email,
+//       name,
+//       status
+//     };
 
-    try {
-      const event = await Event.findOne({ event: req.event.id });
+//     try {
+//       const event = 
+//       // await Event.findById(req.params.id);
 
-      event.attendee.unshift(newAttendee);
+//       // event.attendee.unshift(newAtt);
 
-      await event.save();
+//       await newAtt.save();
 
-      res.json(event);
-    } catch (err) {
-      console.error(err.message);
-      res.status(500).send('Server Error');
-    }
-  }
-);
+//       res.json(event);
 
+//       if (!event) throw Error('Something went wrong finding the event');
+//       res.status(200).json(event);
 
-// @route    DELETE api/events/attendee/:att_id
-// @desc     Delete attendee from event
-// @access   Private
-
-router.delete('/attendee/:att_id', auth, async (req, res) => {
-  try {
-    const foundEvent = await Event.findOne({ event: req.event.id });
-
-    foundEvent.attendee = foundEvenet.attendee.filter(
-      (att) => att._id.toString() !== req.params.att_id
-    );
-
-    await foundEvent.save();
-    return res.status(200).json(foundEvent);
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ msg: 'Server error' });
-  }
-});
+//     } catch (err) {
+//       console.error(err.message);
+//       res.status(500).send('Server Error');
+//     }
+//   }
+// );
 
 
+// // @route    DELETE api/events/attendee/:att_id
+// // @desc     Delete attendee from event
+// // @access   Private
+
+// router.delete('/attendee/:att_id', auth, async (req, res) => {
+//   try {
+//     const foundEvent = await Event.findOne({ event: req.event.id });
+
+//     foundEvent.attendee = foundEvenet.attendee.filter(
+//       (att) => att._id.toString() !== req.params.att_id
+//     );
+
+//     await foundEvent.save();
+//     return res.status(200).json(foundEvent);
+//   } catch (error) {
+//     console.error(error);
+//     return res.status(500).json({ msg: 'Server error' });
+//   }
+// });
 
 // @route   PUT api/events/:id
 // @desc    Update specific event
@@ -133,7 +132,7 @@ router.put('/:id', auth, async (req, res) => {
       dateEnd: req.body.dateEnd,
     },{new: true}, (error, event) => {
       if (error) {
-        return next(error)
+        throw Error('Could not update event.')
       } else {
         res.json(event)
         // console.log(event)
@@ -141,7 +140,7 @@ router.put('/:id', auth, async (req, res) => {
     })
   })
 //UPDATE arrivalTime
-// @route   PUT api/events/:id
+// @route   PUT api/events/log/:id
 // @desc    Update specific
 // @access  Private
 router.put('/log/:id', auth, async (req, res) => {
@@ -149,7 +148,7 @@ router.put('/log/:id', auth, async (req, res) => {
     arrivalTime: req.body.arrivalTime,
   },{new: true}, (error, event) => {
     if (error) {
-      return next(error)
+      throw Error('Could not log event.')
     } else {
       res.json(event)
       // console.log(event)
