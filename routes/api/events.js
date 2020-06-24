@@ -41,7 +41,13 @@ router.get('/:id', auth, (req, res) => {
 // @desc    POST event
 // @access  Private
 router.post('/', auth, async (req, res) => {
-  const {title, location, dateStart, dateEnd, attendee:[{email, name, status}]} = req.body
+  const {title, location, dateStart, dateEnd, 
+    attendee 
+  } = req.body
+
+  if (!title) {
+    return res.status(400).json({ msg: 'Please enter a title' });
+  }
 
   try{  
     const newEvent = new Event({
@@ -49,8 +55,8 @@ router.post('/', auth, async (req, res) => {
         location,
         dateStart,
         dateEnd,
-        user: req.user.id, 
-        attendee: [{email, name, status}]
+        user: req.user.id,
+        attendee
     });
 
     const event = await newEvent.save();
@@ -68,58 +74,25 @@ router.post('/', auth, async (req, res) => {
 }
 });
 
-// // @route    POST api/events/attendee
-// // @desc     Add event attendee
-// // @access   Private
-// router.post('/events/attendee', auth, async (req, res) => {
-//     const { email, name, status } = req.body;
+// @route    DELETE api/events/attendee/:att_id
+// @desc     Delete attendee from event
+// @access   Private
 
-//     const newAtt ={
-//       email,
-//       name,
-//       status
-//     };
+router.delete('/attendee/:att_id', auth, async (req, res) => {
+  try {
+    const foundEvent = await Event.findOne({ event: req.event.id });
 
-//     try {
-//       const event = 
-//       // await Event.findById(req.params.id);
-
-//       // event.attendee.unshift(newAtt);
-
-//       await newAtt.save();
-
-//       res.json(event);
-
-//       if (!event) throw Error('Something went wrong finding the event');
-//       res.status(200).json(event);
-
-//     } catch (err) {
-//       console.error(err.message);
-//       res.status(500).send('Server Error');
-//     }
-//   }
-// );
-
-
-// // @route    DELETE api/events/attendee/:att_id
-// // @desc     Delete attendee from event
-// // @access   Private
-
-// router.delete('/attendee/:att_id', auth, async (req, res) => {
-//   try {
-//     const foundEvent = await Event.findOne({ event: req.event.id });
-
-//     foundEvent.attendee = foundEvenet.attendee.filter(
-//       (att) => att._id.toString() !== req.params.att_id
-//     );
-
-//     await foundEvent.save();
-//     return res.status(200).json(foundEvent);
-//   } catch (error) {
-//     console.error(error);
-//     return res.status(500).json({ msg: 'Server error' });
-//   }
-// });
+    foundEvent.attendee = foundEvent.attendee.filter(
+      (att) => att._id.toString() !== req.params.att_id
+    );
+    // await foundEvent.save();
+    
+    return res.status(200).json(foundEvent);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ msg: 'Server error' });
+  }
+});
 
 // @route   PUT api/events/:id
 // @desc    Update specific event

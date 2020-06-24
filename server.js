@@ -34,7 +34,7 @@ mongoose
   .connect(db, { 
       useNewUrlParser: true, 
       useUnifiedTopology: true, 
-      useFindAndModify: false,
+      useFindAndModify: false
     })
     .then(()=>console.log('MongoDB connect bruh...'))
     .catch(err=>console.log(err));
