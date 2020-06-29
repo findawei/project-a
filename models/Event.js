@@ -23,7 +23,7 @@ const EventSchema = new Schema({
     type: Date,
     required: true
   },
-  attendee:[ 
+  attendees:[ 
     {
       email: {
         type: String,

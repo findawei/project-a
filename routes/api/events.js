@@ -42,7 +42,7 @@ router.get('/:id', auth, (req, res) => {
 // @access  Private
 router.post('/', auth, async (req, res) => {
   const {title, location, dateStart, dateEnd, 
-    attendee 
+    attendees 
   } = req.body
 
   if (!title) {
@@ -56,7 +56,7 @@ router.post('/', auth, async (req, res) => {
         dateStart,
         dateEnd,
         user: req.user.id,
-        attendee
+        attendees
     });
 
     const event = await newEvent.save();
@@ -78,19 +78,20 @@ router.post('/', auth, async (req, res) => {
 // @desc     Delete attendee from event
 // @access   Private
 
-router.delete('/attendee/:att_id', auth, async (req, res) => {
+router.delete('/:id/:att_id', auth, async (req, res) => {
   try {
-    const foundEvent = await Event.findOne({ event: req.event.id });
+    // const foundEvent = await Event.findOne({event: req.event.id});
 
-    foundEvent.attendee = foundEvent.attendee.filter(
+    const foundEvent = await Event.findById(req.event.id);
+
+    foundEvent.attendees = foundEvent.attendees.filter(
       (att) => att._id.toString() !== req.params.att_id
     );
-    // await foundEvent.save();
+    await foundEvent.save();
     
     return res.status(200).json(foundEvent);
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ msg: 'Server error' });
+  } catch (e) {
+    res.status(400).json({ msg: e.message, success: false })
   }
 });
 
@@ -103,6 +104,7 @@ router.put('/:id', auth, async (req, res) => {
       location: req.body.location,
       dateStart: req.body.dateStart,
       dateEnd: req.body.dateEnd,
+      attendees: req.body.attendees
     },{new: true}, (error, event) => {
       if (error) {
         throw Error('Could not update event.')
