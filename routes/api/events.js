@@ -3,6 +3,10 @@ const router = express.Router();
 const auth = require('../../middleware/auth')
 const Event = require('../../models/Event');
 const User = require('../../models/User');
+
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
 // @route   GET api/events/
 // @desc    Get all events for a specific user
 // @access  Private
@@ -37,12 +41,13 @@ router.get('/:id', auth, (req, res) => {
 //   res.status(400).json({ msg: e.message });
 // }
 // });
+
 // @route   POST api/events/
 // @desc    POST event
 // @access  Private
 router.post('/', auth, async (req, res) => {
-  const {title, location, dateStart, dateEnd, 
-    attendees 
+  const {title, location, dateStart, dateEnd,
+    attendees
   } = req.body
 
   if (!title) {
@@ -56,21 +61,34 @@ router.post('/', auth, async (req, res) => {
         dateStart,
         dateEnd,
         user: req.user.id,
-        attendees
+        attendees:  attendees.map(x => ({
+          email: x.email,
+          name: x.name,
+          status: x.status,
+        })),
     });
+    
+    const email = attendees.map((a) => a.email);
+    const attendeesFound = await User.find({email});
+    if (!attendeesFound.length){
+        // Send email
+        const msg = {
+          to: 'hayhoky@gmail.com',
+          from: 'info@tardyapp.com',
+          subject: 'Sending with Twilio SendGrid is Fun',
+          text: 'and easy to do anywhere, even with Node.js',
+          html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+        };
+        sgMail.send(msg);
 
+      // throw Error('Have to invite these guys');
+    }
     const event = await newEvent.save();
     if (!event) throw Error('Something went wrong saving the event');
-
     res.status(200).json(event);
-
-    // const attendeeRegistered = await User.findOne({ user: req.user.email });
-    // if(!attendeeRegistered) throw Error('Fart in a can');
-    // Send email
-    // Else, send attendee invite notification with accept/decline
     } 
   catch (e) {
-  res.status(400).json({ msg: e.message });
+  res.status(400).json({ msg: e.message, success: false });
 }
 });
 
@@ -99,21 +117,35 @@ router.delete('/:id/:att_id', auth, async (req, res) => {
 // @desc    Update specific event
 // @access  Private
 router.put('/:id', auth, async (req, res) => {
-    Event.findOneAndUpdate({_id: req.params.id}, {
+  try{ 
+    const updateEvent = await 
+  Event.findOneAndUpdate({_id: req.params.id}, {
       title: req.body.title,
       location: req.body.location,
       dateStart: req.body.dateStart,
       dateEnd: req.body.dateEnd,
       attendees: req.body.attendees
-    },{new: true}, (error, event) => {
-      if (error) {
-        throw Error('Could not update event.')
-      } else {
-        res.json(event)
-        // console.log(event)
-      }
-    })
-  })
+    },{new: true});
+    return res.status(200).json(updateEvent);
+  } catch(e){
+    res.status(400).json({ msg: e.message, success: false })
+    }
+  });
+  
+
+  // try {
+  //   return await Event.findOneAndUpdate({_id: req.params.id}, {
+  //     title: req.body.title,
+  //     location: req.body.location,
+  //     dateStart: req.body.dateStart,
+  //     dateEnd: req.body.dateEnd,
+  //     attendees: req.body.attendees
+  //   },{new: true})
+    
+  //  } catch (e) {
+  //     res.status(400).json({ msg: e.message, success: false })
+  //   }
+  // });
 //UPDATE arrivalTime
 // @route   PUT api/events/log/:id
 // @desc    Update specific
