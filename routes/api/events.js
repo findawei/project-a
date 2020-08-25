@@ -68,21 +68,22 @@ router.post('/', auth, async (req, res) => {
         })),
     });
     
-    const email = attendees.map((a) => a.email);
-    const attendeesFound = await User.find({email});
-    if (!attendeesFound.length){
-        // Send email
+    const email = attendees.map((a) => (a.email));
+    const attendeesFound = await User.find({email},{_id: 0, email: 1});
+
+    const Registered = attendeesFound.map((a) => (a.email));
+    var notRegistered = email.filter(value => !Registered.includes(value));
+    notRegistered.forEach((element,index,array)=>{
+      // Send email
         const msg = {
-          to: 'hayhoky@gmail.com',
+          to: element,
           from: 'info@tardyapp.com',
           subject: 'Sending with Twilio SendGrid is Fun',
           text: 'and easy to do anywhere, even with Node.js',
           html: '<strong>and easy to do anywhere, even with Node.js</strong>',
         };
         sgMail.send(msg);
-
-      // throw Error('Have to invite these guys');
-    }
+      })
     const event = await newEvent.save();
     if (!event) throw Error('Something went wrong saving the event');
     res.status(200).json(event);
