@@ -1,26 +1,13 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-// Create Schema
-
-// const Attendees = new Schema({
-//     email: {
-//         type: String,
-//         required: true
-//       },
-//       name: {
-//         type: String,
-//         required: true
-//       },
-//       status: {
-//         type: String
-//       }
-// });
-
-
 const EventSchema = new Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
+    ref: 'users'
+  },
+  organizerName:{
+    type: String,
     ref: 'users'
   },
   title: {
@@ -41,12 +28,10 @@ const EventSchema = new Schema({
   },
   attendees:[
     {email: {
-      type: String,
-      required: true
+      type: String
     },
     name: {
       type: String,
-      required: true
     },
     status: {
       type: String

@@ -29,7 +29,10 @@ function Subdocument(value, fields, parent, skipId, options) {
   }
   if (parent != null) {
     // If setting a nested path, should copy isNew from parent re: gh-7048
-    options = Object.assign({}, options, { isNew: parent.isNew });
+    options = Object.assign({}, options, {
+      isNew: parent.isNew,
+      defaults: parent.$__.$options.defaults
+    });
   }
   Document.call(this, value, fields, skipId, options);
 
@@ -38,9 +41,19 @@ function Subdocument(value, fields, parent, skipId, options) {
       if (!this.$__.activePaths.states.modify[key] &&
           !this.$__.activePaths.states.default[key] &&
           !this.$__.$setCalled.has(key)) {
-        delete this._doc[key];
+        const schematype = this.schema.path(key);
+        const def = schematype == null ? void 0 : schematype.getDefault(this);
+        if (def === void 0) {
+          delete this._doc[key];
+        } else {
+          this._doc[key] = def;
+          this.$__.activePaths.default(key);
+        }
       }
     }
+
+    delete options.priorDoc;
+    delete this.$__.$options.priorDoc;
   }
 }
 
@@ -161,6 +174,8 @@ Subdocument.prototype.invalidate = function(path, err, val) {
   } else if (err.kind === 'cast' || err.name === 'CastError') {
     throw err;
   }
+
+  return this.ownerDocument().$__.validationError;
 };
 
 /*!

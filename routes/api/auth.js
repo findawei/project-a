@@ -40,7 +40,8 @@ router.post('/login', async (req, res) => {
       user: {
         id: user._id,
         name: user.name,
-        email: user.email
+        email: user.email,
+        points: user.points
       }
     });
   } catch (e) {
@@ -82,7 +83,7 @@ router.post('/register', async (req, res) => {
     if (!savedUser) throw Error('Something went wrong saving the user');
 
     const token = jwt.sign({ id: savedUser._id }, JWT_SECRET, {
-      expiresIn: 3600000
+      expiresIn: '1 week'
     });
 
     res.status(200).json({
