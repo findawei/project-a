@@ -115,4 +115,23 @@ router.get('/user', auth, async (req, res) => {
   }
 });
 
+/**
+ * @route   PUT api/users
+ * @desc    Update user points
+ * @access  Public
+ */
+
+router.put('/points', auth, async (req, res) => {
+  try {
+    const user = await User.findOneAndUpdate({_id:req.user.id},
+    {points: req.body.points}, {new:true}
+    )
+      if (!user) throw Error('Could not add points.');
+        res.json(user)
+      } catch (e) {
+        res.status(400).json({ msg: e.message });
+      }
+});
+  
+
 module.exports = router;

@@ -4,10 +4,7 @@ const auth = require('../../middleware/auth')
 const Event = require('../../models/Event');
 const User = require('../../models/User');
 // const format = require("date-fns");
-
-// //import the mailer.js file we previously created
 var sender = require('../../email/mailer');
-
 // @route   GET api/events/
 // @desc    Get all events for a specific user
 // @access  Private
@@ -95,35 +92,37 @@ router.post('/', auth, async (req, res) => {
     //     })),
     // })})
     //Send email to non registered users
+
+   
+
     var notRegistered = email.filter(value => !Registered.includes(value));
-    if (!notRegistered.length){
-      notRegistered.forEach((element,index,array)=>{
+    if (notRegistered.length){
+      notRegistered.forEach((element)=>{
       //Pull data for email
-        var data = {
-          //name of the email template that we will be using
-          templateName: "newuser_invite",
-          //sender's and receiver's email
-          sender: "info@tardyapp.com",
-          receiver: element,   
-          //name of the user
-          organizerName: user.name,
-          title: title,
-          location: location,
-          dateStart: dateStart,
-          dateEnd: dateEnd
-            // {attendees:  attendees.map(x => ({
-            //   email: x.email,
-            //   name: x.name,
-            //   status: x.status,
-            // }))}
-       };
-       //pass the data object to send the email
-       sender.sendEmail(data);
+      var data = {
+        //name of the email template that we will be using
+        templateName: "newuser_invite",
+        //sender's and receiver's email
+        sender: "info@tardyapp.com",
+        receiver: element,   
+        //name of the user
+        organizerName: user.name,
+        title: title,
+        location: location,
+        dateStart: dateStart,
+        dateEnd: dateEnd
+          // {attendees:  attendees.map(x => ({
+          //   email: x.email,
+          //   name: x.name,
+          //   status: x.status,
+          // }))}
+     };
+     //pass the data object to send the email
+     sender.sendEmail(data);
       })}
     const event = await newEvent.save();
     if (!event) throw Error('Something went wrong saving the event');
     res.status(200).json(event);
-    //Change '' to 'event' after testing complete
     } 
   catch (e) {
   res.status(400).json({ msg: e.message, success: false });

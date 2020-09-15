@@ -7,7 +7,6 @@ templates = {
     // confirm_account       : "d-68c570dd120044d894e07566bf951964",
     newuser_invite: "d-a443c31fadb0473095393a1833e1074b"
 };
-
 function sendEmail(data) {
     const msg = {
        //extract the email details

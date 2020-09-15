@@ -20,7 +20,7 @@ const UserSchema = new Schema({
     default: Date.now
   },
   points:{
-    type: String,
+    type: Number,
     required: false
   }
 });
