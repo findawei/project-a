@@ -76,7 +76,7 @@ router.post('/', auth, async (req, res) => {
     //Registered users
     const attendeesFound = await User.find({email},{_id: 1, email: 1});
     const Registered = attendeesFound.map((a) => (a.email));
-    const RegisteredID = attendeesFound.map((a) => (a._id));
+    // const RegisteredID = attendeesFound.map((a) => (a._id));
     // // Send invite to inbox of new event for registered users
     // RegisteredID.forEach((element,index,array)=>{
     //   const newEvent = new Event({
@@ -96,7 +96,7 @@ router.post('/', auth, async (req, res) => {
    
 
     var notRegistered = email.filter(value => !Registered.includes(value));
-    if (notRegistered.length){
+    // if (notRegistered.length){
       notRegistered.forEach((element)=>{
       //Pull data for email
       var data = {
@@ -119,7 +119,7 @@ router.post('/', auth, async (req, res) => {
      };
      //pass the data object to send the email
      sender.sendEmail(data);
-      })}
+      })
     const event = await newEvent.save();
     if (!event) throw Error('Something went wrong saving the event');
     res.status(200).json(event);
