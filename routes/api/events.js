@@ -27,7 +27,7 @@ router.get('/invites', auth, async (req, res) => {
   const user = await User.findById(req.user.id)
   const useremail = user.email
   // Get the current user email and search for all events that have email in attendees
-  const events = await Event.find({"attendees.email": useremail}).sort({
+  const events = await Event.find({"attendees.email": useremail, "attendees.status" : null}).sort({
     date: -1,});
   if (!events) throw Error('No items');
   res.status(200).json(events);
@@ -57,14 +57,19 @@ router.post('/', auth, async (req, res) => {
   }
   try{ 
     //Save event for organizer
+
+    var eightdigitrandom = Math.floor(10000000 + Math.random() * 90000000);
+
     const user = await User.findById(req.user.id).select('-password');
     const newEvent = new Event({
         title,
         location,
+        eventId: eightdigitrandom,
         dateStart,
         dateEnd,
+        isOrganizer: true,
         user: req.user.id,
-        organizerName: user.name,
+        organizer: {email: user.email, name: user.name},
         attendees:  attendees.map(x => ({
           email: x.email,
           name: x.name,
@@ -76,25 +81,8 @@ router.post('/', auth, async (req, res) => {
     //Registered users
     const attendeesFound = await User.find({email},{_id: 1, email: 1});
     const Registered = attendeesFound.map((a) => (a.email));
-    // const RegisteredID = attendeesFound.map((a) => (a._id));
-    // // Send invite to inbox of new event for registered users
-    // RegisteredID.forEach((element,index,array)=>{
-    //   const newEvent = new Event({
-    //     title,
-    //     location,
-    //     dateStart,
-    //     dateEnd,
-    //     user: req.user.id,
-    //     attendees:  attendees.map(x => ({
-    //       email: x.email,
-    //       name: x.name,
-    //       status: x.status,
-    //     })),
-    // })})
+    
     //Send email to non registered users
-
-   
-
     var notRegistered = email.filter(value => !Registered.includes(value));
     // if (notRegistered.length){
       notRegistered.forEach((element)=>{
@@ -124,6 +112,59 @@ router.post('/', auth, async (req, res) => {
     if (!event) throw Error('Something went wrong saving the event');
     res.status(200).json(event);
     } 
+  catch (e) {
+  res.status(400).json({ msg: e.message, success: false });
+}
+});
+
+// @route   POST api/events/accept
+// @desc    POST event
+// @access  Private
+router.post('/accept', auth, async (req, res) => {
+  const {title, location, dateStart, dateEnd,
+    attendees, eventId, organizer
+  } = req.body
+
+  if (!title) {
+    return res.status(400).json({ msg: 'Please enter a title' });
+  }
+  try{ 
+    //Save event for attendee
+    const user = await User.findById(req.user.id).select('-password');
+    const newEvent = new Event({
+      title,
+      location,
+      eventId,
+      dateStart,
+      dateEnd,
+      isOrganizer: false,
+      user: req.user.id,
+      organizer,
+      attendees:  attendees.map(x => ({
+        email: x.email,
+        name: x.name,
+        status: x.status,
+      })),
+  });    
+    const event = await newEvent.save();
+    if (!event) throw Error('Something went wrong saving the event');
+    res.status(200).json(event);
+
+    //Update status of original event
+    const originalEvent = await Event.findOneAndUpdate({eventId: eventId}, {isOrganizer: true}, 
+      {
+      //search for own user name & update status
+      // attendees: {
+      //     email: req.user.email,
+      //     status: "accepted"
+      // }
+    },
+    {new: true}
+    )
+    res.status(200).json(originalEvent)
+  
+  } 
+    
   catch (e) {
   res.status(400).json({ msg: e.message, success: false });
 }

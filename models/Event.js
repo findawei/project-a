@@ -6,9 +6,13 @@ const EventSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'users'
   },
-  organizerName:{
-    type: String,
-    ref: 'users'
+  eventId:{
+    type: Number,
+    required: true
+  },
+  isOrganizer:{
+    type: Boolean,
+    required: true
   },
   title: {
     type: String,
@@ -40,7 +44,18 @@ const EventSchema = new Schema({
   arrivalTime: {
     type: Date,
     required: false
-  }
-});
+  },
+  organizer: {
+      email: {
+        type: String,
+        ref: 'users'
+      },
+      name: {
+        type: String,
+        ref: 'users'
+    }
+}
+
+})
 
 module.exports = Event = mongoose.model("event", EventSchema);
