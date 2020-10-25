@@ -27,7 +27,7 @@ router.get('/invites', auth, async (req, res) => {
   const user = await User.findById(req.user.id)
   const useremail = user.email
   // Get the current user email and search for all events that have email in attendees
-  const events = await Event.find({"attendees.email": useremail, "attendees.status" : null}).sort({
+  const events = await Event.find({"attendees.email": useremail, "isOrganizer": true, "attendees.status" : {$exists: false}}).sort({
     date: -1,});
   if (!events) throw Error('No items');
   res.status(200).json(events);
@@ -117,17 +117,17 @@ router.post('/', auth, async (req, res) => {
 }
 });
 
-// @route   POST api/events/accept
+// @route   POST api/events/response
 // @desc    POST event
 // @access  Private
-router.post('/accept', auth, async (req, res) => {
+router.post('/response', auth, async (req, res) => {
   const {title, location, dateStart, dateEnd,
     attendees, eventId, organizer
   } = req.body
 
-  if (!title) {
-    return res.status(400).json({ msg: 'Please enter a title' });
-  }
+  // if (!title) {
+  //   return res.status(400).json({ msg: 'Please enter a title' });
+  // }
   try{ 
     //Save event for attendee
     const user = await User.findById(req.user.id).select('-password');
@@ -148,23 +148,19 @@ router.post('/accept', auth, async (req, res) => {
   });    
     const event = await newEvent.save();
     if (!event) throw Error('Something went wrong saving the event');
-    res.status(200).json(event);
-
-    //Update status of original event
-    const originalEvent = await Event.findOneAndUpdate({eventId: eventId}, {isOrganizer: true}, 
-      {
-      //search for own user name & update status
-      // attendees: {
-      //     email: req.user.email,
-      //     status: "accepted"
-      // }
-    },
-    {new: true}
-    )
-    res.status(200).json(originalEvent)
+    
+    const useremail = user.email
+    
+    // Update status of original event
+    const originalEvent = await Event.findOneAndUpdate({eventId: eventId, "isOrganizer": true, 
+    "attendees": {$elemMatch: {email: useremail}}
+  },
+    { $set: { "attendees.$.status": "accepted"} }
+      )
+    
+    res.status(200).json(event)
   
   } 
-    
   catch (e) {
   res.status(400).json({ msg: e.message, success: false });
 }

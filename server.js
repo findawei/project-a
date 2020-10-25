@@ -6,7 +6,7 @@ const path =require('path');
 const cors =require( 'cors');
 const config =require( './config');
 
-
+const items = require('./routes/api/items');
 const events = require('./routes/api/events');
 const users = require("./routes/api/users");
 const authRoutes = require("./routes/api/auth");
@@ -45,6 +45,8 @@ mongoose
 app.use("/api/users", users);
 app.use('/api/events', events);
 app.use('/api/auth', authRoutes);
+app.use('/api/items', items);
+
 
 
 const { PORT } = config;
