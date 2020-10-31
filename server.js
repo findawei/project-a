@@ -10,6 +10,7 @@ const items = require('./routes/api/items');
 const events = require('./routes/api/events');
 const users = require("./routes/api/users");
 const authRoutes = require("./routes/api/auth");
+const purchases = require('./routes/api/purchases')
 
 const app = express();
 
@@ -46,8 +47,7 @@ app.use("/api/users", users);
 app.use('/api/events', events);
 app.use('/api/auth', authRoutes);
 app.use('/api/items', items);
-
-
+app.use('/api/purchases', purchases);
 
 const { PORT } = config;
 app.listen(PORT, () => console.log(`Server started on PORT ${PORT}`));
