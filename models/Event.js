@@ -45,6 +45,10 @@ const EventSchema = new Schema({
     type: Date,
     required: false
   },
+  endTime: {
+    type: Date,
+    required: false
+  },
   organizer: {
       email: {
         type: String,

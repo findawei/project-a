@@ -117,48 +117,36 @@ router.post('/', auth, async (req, res) => {
 }
 });
 
-// @route   POST api/events/response
+// @route   POST api/events/response/:id
 // @desc    POST event
 // @access  Private
-router.post('/response', auth, async (req, res) => {
-  const {title, location, dateStart, dateEnd,
-    attendees, eventId, organizer
-  } = req.body
 
-  // if (!title) {
-  //   return res.status(400).json({ msg: 'Please enter a title' });
-  // }
+router.put('/response/:id', auth, async (req, res) => {
   try{ 
-    //Save event for attendee
     const user = await User.findById(req.user.id).select('-password');
+    const useremail = user.email
+    // Update status of original event
+    const originalEvent = await Event.findOneAndUpdate({_id: req.params.id,
+      "attendees": {$elemMatch: {email: useremail}}},
+     {$set: { "attendees.$.status": "accepted"}},{new:true}
+     );
+
+    //Save event for attendee
     const newEvent = new Event({
-      title,
-      location,
-      eventId,
-      dateStart,
-      dateEnd,
+      title: originalEvent.title,
+      location: originalEvent.location,
+      eventId: originalEvent.eventId,
+      dateStart: originalEvent.dateStart,
+      dateEnd: originalEvent.dateEnd,
       isOrganizer: false,
       user: req.user.id,
-      organizer,
-      attendees:  attendees.map(x => ({
-        email: x.email,
-        name: x.name,
-        status: x.status,
-      })),
-  });    
+      organizer: originalEvent.organizer,
+      attendees: originalEvent.attendees 
+    });    
     const event = await newEvent.save();
     if (!event) throw Error('Something went wrong saving the event');
     
-    const useremail = user.email
-    
-    // Update status of original event
-    const originalEvent = await Event.findOneAndUpdate({eventId: eventId, "isOrganizer": true, 
-    "attendees": {$elemMatch: {email: useremail}}
-  },
-    { $set: { "attendees.$.status": "accepted"} }
-      )
-    
-    res.status(200).json(event)
+   return res.status(200).json(event)
   
   } 
   catch (e) {
@@ -166,7 +154,31 @@ router.post('/response', auth, async (req, res) => {
 }
 });
 
-// @route    DELETE api/events/attendee/:att_id
+// @route   POST api/events/decline/:id
+// @desc    POST event
+// @access  Private
+
+router.put('/decline/:id', auth, async (req, res) => {
+  try{ 
+    const user = await User.findById(req.user.id).select('-password');
+    const useremail = user.email
+    // Update status of original event
+    const originalEvent = await Event.findOneAndUpdate({_id: req.params.id,
+      "attendees": {$elemMatch: {email: useremail}}},
+     {$set: { "attendees.$.status": "declined"}},{new:true}
+     );
+
+    if (!originalEvent) throw Error('Something went wrong saving the event');
+    
+   return res.status(200).json(originalEvent)
+  
+  } 
+  catch (e) {
+  res.status(400).json({ msg: e.message, success: false });
+}
+});
+
+// @route    DELETE api/events/:id/:att_id
 // @desc     Delete attendee from event
 // @access   Private
 
@@ -213,6 +225,7 @@ router.put('/:id', auth, async (req, res) => {
 router.put('/log/:id', auth, async (req, res) => {
   Event.findOneAndUpdate({_id: req.params.id}, {
     arrivalTime: req.body.arrivalTime,
+    endTime: req.body.endTime
   },{new: true}, (error, event) => {
     if (error) {
       throw Error('Could not log event.')
