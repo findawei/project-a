@@ -1,0 +1,7 @@
+{
+  "name": "tardy",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}

@@ -1,0 +1,6 @@
+<platform name="ios">
+    <!-- iOS location usage description -->
+<edit-config target="NSContactsUsageDescription" file="*-Info.plist" mode="merge">
+    <string>need contacts access to search friends</string>
+</edit-config>
+</platform>
