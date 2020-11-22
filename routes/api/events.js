@@ -5,6 +5,11 @@ const Event = require('../../models/Event');
 const User = require('../../models/User');
 // const format = require("date-fns");
 var sender = require('../../email/mailer');
+const config =require( '../../config');
+const bodyParser = require('body-parser');
+
+const { VERIFICATION_TOKEN } = config;
+
 // @route   GET api/events/
 // @desc    Get all events for a specific user
 // @access  Private
@@ -251,5 +256,44 @@ router.delete('/:id', auth, async (req, res) => {
   res.status(400).json({ msg: e.message, success: false });
 }
 });
+
+
+
+router.post('/', bodyParser.raw({ type: 'application/json' }), (req, res) => {
+
+  let event;
+
+  try {
+      event = JSON.parse(req.body);
+  } catch (err) {
+      res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+  // Check to see if you received the event or not.
+  console.log(event)
+  if (req.headers.authorization === VERIFICATION_TOKEN) {
+      res.status(200);
+      console.log("Meeting Started Webhook Recieved.") 
+
+              // const msg = {
+              //     to: 'hayhoky@gmail.com',
+              //     from: 'info@tardyapp.com',
+              //     subject: 'We are sorry that we missed you.',
+              //     text: 'Please, let us know if the timing of these webinars do not work for you. We hope you can join us next time.'
+              // };
+          
+              // sgMail.send(msg);
+          
+              // console.log("Email sent.")
+          
+          // .catch(function (err) {
+          //     // API call failed...
+          //     console.log('API call failed, reason ', err);
+          // });
+  } else {
+      res.status(403).end('Access forbidden');
+      console.log("Invalid Post Request.")
+  }
+});
+
 
 module.exports = router;

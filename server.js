@@ -12,6 +12,8 @@ const users = require("./routes/api/users");
 const authRoutes = require("./routes/api/auth");
 const purchases = require('./routes/api/purchases')
 
+const { MONGO_URI, MONGO_DB_NAME } = config;
+
 const app = express();
 
 // CORS Middleware
@@ -24,10 +26,9 @@ app.use(morgan('dev'));
 //       extended: false
 //     })
 //   );
-app.use(bodyParser.json());
+
 //connect to db
-const { MONGO_URI } = config;
-const db = `${MONGO_URI}`;
+const db = `${MONGO_URI}/${MONGO_DB_NAME}`;
 
 
 //Connect to mongo
@@ -40,14 +41,17 @@ mongoose
     .then(()=>console.log('MongoDB connect bruh...'))
     .catch(err=>console.log(err));
 
-
-
 // Routes
 app.use("/api/users", users);
 app.use('/api/events', events);
 app.use('/api/auth', authRoutes);
 app.use('/api/items', items);
 app.use('/api/purchases', purchases);
+
+
+
+app.use(bodyParser.json());
+
 
 const { PORT } = config;
 app.listen(PORT, () => console.log(`Server started on PORT ${PORT}`));
