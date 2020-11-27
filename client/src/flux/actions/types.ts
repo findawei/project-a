@@ -22,6 +22,7 @@ export const AUTH_ERROR = "AUTH_ERROR";
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 export const LOGIN_FAIL = "LOGIN_FAIL";
 export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS";
+export const LOGOUT_ERROR = "LOGOUT_ERROR";
 export const REGISTER_SUCCESS = "REGISTER_SUCCESS";
 export const REGISTER_FAIL = "REGISTER_FAIL";
 export const USER_POINTS = "USER_POINTS";
@@ -42,3 +43,24 @@ export const PURCHASE_ERROR = "PURCHASE_ERROR";
 
 export const GET_ERRORS = 'GET_ERRORS';
 export const CLEAR_ERRORS = 'CLEAR_ERRORS';
+
+// API CALLS
+export const BEGIN_API_CALL = "BEGIN_API_CALL";
+export const API_CALL_ERROR = "API_CALL_ERROR";
+
+// SIGN UP
+export const SIGNUP_SUCCESS = "SIGNUP_SUCCESS";
+export const SIGNUP_ERROR = "SIGNUP_ERROR";
+
+// SIGN IN
+export const SIGNIN_SUCCESS = "SIGNIN_SUCCESS";
+export const SIGNIN_ERROR = "SIGNIN_ERROR";
+export const EMAIL_NOT_VERIFIED = "EMAIL_NOT_VERIFIED";
+
+// SIGN OUT
+export const SIGNOUT_SUCCESS = "SIGNOUT_SUCCESS";
+export const SIGNOUT_ERROR = "SIGNOUT_ERROR";
+
+// RESET PASSWORD
+export const RESET_SUCCESS = "RESET_SUCCESS";
+export const RESET_ERROR = "RESET_ERROR";

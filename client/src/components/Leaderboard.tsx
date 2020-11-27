@@ -41,7 +41,8 @@ useEffect(() => {
         <IonCard>
             <IonCardHeader>
             <IonCardTitle>
-                Hi {auth!.user.name} 
+                Hi 
+                {/* {auth!.user.name}  */}
                 </IonCardTitle>
             </IonCardHeader>
             <IonCardContent>

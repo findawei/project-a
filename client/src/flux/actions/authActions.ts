@@ -9,9 +9,15 @@ import {
   LOGIN_FAIL,
   LOGOUT_SUCCESS,
   REGISTER_SUCCESS,
-  REGISTER_FAIL
+  REGISTER_FAIL,
+  LOGOUT_ERROR,
+  RESET_SUCCESS,
+  RESET_ERROR,
+  EMAIL_NOT_VERIFIED
 } from './types';
 import { IAuthFunction, IConfigHeaders, IUser } from '../../types/interfaces';
+import { beginApiCall, apiCallError } from "./apiStatusActions";
+import firebase from "../../firebase";
 
 // Check token & load user
 export const loadUser = () => (dispatch: Function, getState: Function) => {
@@ -52,74 +58,195 @@ export const logPoints = (user: IUser) => (dispatch: Function, getState: Functio
 }; 
 
 // Register User
-export const register = ({ name, email, password }: IAuthFunction) => (
-  dispatch: Function
-) => {
-  // Headers
-  const config = {
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  };
-
-  // Request body
-  const body = JSON.stringify({ name, email, password });
-
-  axios
-    .post('/api/auth/register', body, config)
-    .then(res =>
-      dispatch({
-        type: REGISTER_SUCCESS,
-        payload: res.data
+export const register = ({ email, password }: IAuthFunction) => async (dispatch: Function) => {
+  try {
+    dispatch(beginApiCall());
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then(dataBeforeEmail => {
+        firebase.auth().onAuthStateChanged(function(user) {
+          user!.sendEmailVerification();
+        });
       })
-    )
-    .catch(err => {
-      dispatch(
-        returnErrors(err.response.data, err.response.status, 'REGISTER_FAIL')
-      );
-      dispatch({
-        type: REGISTER_FAIL
+      .then(dataAfterEmail => {
+        firebase.auth().onAuthStateChanged(function(user) {
+          if (user) {
+            // Sign up successful
+            dispatch({
+              type: REGISTER_SUCCESS,
+              payload:
+                "Your account was successfully created! Now you need to verify your e-mail address, please go check your inbox."
+            });
+          } else {
+            // Signup failed
+            dispatch({
+              type: REGISTER_FAIL,
+              payload:
+                "Something went wrong, we couldn't create your account. Please try again."
+            });
+          }
+        });
+      })
+      .catch(() => {
+        dispatch(apiCallError());
+        dispatch({
+          type: REGISTER_FAIL,
+          payload:
+            "Something went wrong, we couldn't create your account. Please try again."
+        });
       });
+  } catch (err) {
+    dispatch(apiCallError());
+    dispatch({
+      type: REGISTER_FAIL,
+      payload:
+        "Something went wrong, we couldn't create your account. Please try again."
     });
+  }
+  //pre-firebase
+  // // Headers
+  // const config = {
+  //   headers: {
+  //     'Content-Type': 'application/json'
+  //   }
+  // };
+
+  // // Request body
+  // const body = JSON.stringify({ name, email, password });
+
+  // axios
+  //   .post('/api/auth/register', body, config)
+  //   .then(res =>
+  //     dispatch({
+  //       type: REGISTER_SUCCESS,
+  //       payload: res.data
+  //     })
+  //   )
+  //   .catch(err => {
+  //     dispatch(
+  //       returnErrors(err.response.data, err.response.status, 'REGISTER_FAIL')
+  //     );
+  //     dispatch({
+  //       type: REGISTER_FAIL
+  //     });
+  //   });
 };
 
 // Login User
-export const login = ({ email, password }: IAuthFunction) => (
-  dispatch: Function
-) => {
-  // Headers
-  const config = {
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  };
-
-  // Request body
-  const body = JSON.stringify({ email, password });
-
-  axios
-    .post('/api/auth/login', body, config)
-    .then(res =>
-      dispatch({
-        type: LOGIN_SUCCESS,
-        payload: res.data
+export const login = ({ email, password }: IAuthFunction) => 
+async (dispatch: Function) => {
+  try {
+    dispatch(beginApiCall());
+    firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .then(data => {
+        if (data.user!.emailVerified) {
+          console.log("IF", data.user!.emailVerified);
+          dispatch({ type: LOGIN_SUCCESS });
+        } else {
+          console.log("ELSE", data.user!.emailVerified);
+          dispatch({
+            type: EMAIL_NOT_VERIFIED,
+            payload: "You haven't verified your e-mail address."
+          });
+        }
       })
-    )
-    .catch(err => {
-      dispatch(
-        returnErrors(err.response.data, err.response.status, 'LOGIN_FAIL')
-      );
-      dispatch({
-        type: LOGIN_FAIL
+      .catch(() => {
+        dispatch(apiCallError());
+        dispatch({
+          type: LOGIN_FAIL,
+          payload: "Invalid login credentials"
+        });
       });
-    });
+  } catch (err) {
+    dispatch(apiCallError());
+    dispatch({ type: LOGIN_FAIL, payload: "Invalid login credentials" });
+  }
+  // // Headers
+  // const config = {
+  //   headers: {
+  //     'Content-Type': 'application/json'
+  //   }
+  // };
+
+  // // Request body
+  // const body = JSON.stringify({ email, password });
+
+  // axios
+  //   .post('/api/auth/login', body, config)
+  //   .then(res =>
+  //     dispatch({
+  //       type: LOGIN_SUCCESS,
+  //       payload: res.data
+  //     })
+  //   )
+  //   .catch(err => {
+  //     dispatch(
+  //       returnErrors(err.response.data, err.response.status, 'LOGIN_FAIL')
+  //     );
+  //     dispatch({
+  //       type: LOGIN_FAIL
+  //     });
+  //   });
 };
 
 // Logout User
-export const logout = () => {
-  return {
-    type: LOGOUT_SUCCESS
-  };
+export const logout = () => async (dispatch: Function) => {
+  // return {
+  //   type: LOGOUT_SUCCESS
+  // };
+  try {
+    dispatch(beginApiCall());
+    firebase
+      .auth()
+      .signOut()
+      .then(() => {
+        dispatch({ type: LOGOUT_SUCCESS });
+      })
+      .catch(() => {
+        dispatch(apiCallError());
+        dispatch({
+          type: LOGOUT_ERROR,
+          payload: "Error, we were not able to log you out. Please try again."
+        });
+      });
+  } catch (err) {
+    dispatch(apiCallError());
+    dispatch({
+      type: LOGOUT_ERROR,
+      payload: "Error, we were not able to log you out. Please try again."
+    });
+  }
+};
+
+// Reset password with Firebase
+export const resetPassword = (email: any) => async (dispatch: Function) => {
+  try {
+    dispatch(beginApiCall());
+    firebase
+      .auth()
+      .sendPasswordResetEmail(email)
+      .then(() =>
+        dispatch({
+          type: RESET_SUCCESS,
+          payload:
+            "Check your inbox. We've sent you a secured reset link by e-mail."
+        })
+      )
+      .catch(() => {
+        dispatch(apiCallError());
+        dispatch({
+          type: RESET_ERROR,
+          payload:
+            "Oops, something went wrong we couldn't send you the e-mail. Try again and if the error persists, contact admin."
+        });
+      });
+  } catch (err) {
+    dispatch(apiCallError());
+    dispatch({ type: RESET_ERROR, payload: err });
+  }
 };
 
 // Setup config/headers and token
@@ -141,4 +268,9 @@ export const tokenConfig = (getState: Function) => {
 
   return config;
 };
+
+
+
+
+
 

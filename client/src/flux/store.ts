@@ -1,19 +1,33 @@
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import rootReducer from './reducers';
 import { composeWithDevTools } from 'redux-devtools-extension';
+import { reactReduxFirebase } from "react-redux-firebase";
+import firebase from "../firebase";
 
 
 const initialState = {};
 
 const middleWare = [thunk];
 
-const store = createStore(
+//Before Firebase
+// const store = createStore(
+//   rootReducer,
+//   initialState, composeWithDevTools
+//   (
+//     applyMiddleware(...middleWare))
+//   );
+
+  // 1. Enhancing our createStore method with Firebase
+//@ts-ignore
+const createStoreWithFirebase = compose(reactReduxFirebase(firebase))(createStore);
+// 2. Creating our store with this newly enhanced store creator
+const store = createStoreWithFirebase(
   rootReducer,
   initialState, composeWithDevTools
   (
-    applyMiddleware(...middleWare))
-  )
-;
+  applyMiddleware(...middleWare))
+  );
 
 export default store;
+
