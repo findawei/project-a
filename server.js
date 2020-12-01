@@ -16,6 +16,8 @@ const { MONGO_URI, MONGO_DB_NAME } = config;
 
 const app = express();
 
+app.use(bodyParser.json());
+
 // CORS Middleware
 app.use(cors());
 // Logger Middleware
@@ -47,10 +49,6 @@ app.use('/api/events', events);
 app.use('/api/auth', authRoutes);
 app.use('/api/items', items);
 app.use('/api/purchases', purchases);
-
-
-
-app.use(bodyParser.json());
 
 
 const { PORT } = config;

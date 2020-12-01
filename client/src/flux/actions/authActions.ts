@@ -11,9 +11,19 @@ import {
   REGISTER_SUCCESS,
   REGISTER_FAIL,
   LOGOUT_ERROR,
+  
+
+
+  SIGNUP_SUCCESS,
+  SIGNUP_ERROR,
+  SIGNIN_SUCCESS,
+  SIGNIN_ERROR,
+  EMAIL_NOT_VERIFIED,
+  SIGNOUT_SUCCESS,
+  SIGNOUT_ERROR,
   RESET_SUCCESS,
-  RESET_ERROR,
-  EMAIL_NOT_VERIFIED
+  RESET_ERROR
+
 } from './types';
 import { IAuthFunction, IConfigHeaders, IUser } from '../../types/interfaces';
 import { beginApiCall, apiCallError } from "./apiStatusActions";
@@ -252,20 +262,27 @@ export const resetPassword = (email: any) => async (dispatch: Function) => {
 // Setup config/headers and token
 export const tokenConfig = (getState: Function) => {
   // Get token from localstorage
-  const token = getState().auth.token;
+  const user = firebase.auth().currentUser
+  // const token = getState().auth.token;
+  const token = user && (user.getIdToken)
 
-  // Headers
-  const config: IConfigHeaders = {
+  // // Headers
+  // const config: IConfigHeaders = {
+  //   headers: {
+  //     'Content-type': 'application/json'
+  //   }
+  // };
+
+  // // If token, add to headers
+  // if (token) {
+  //   config.headers['x-auth-token'] = token;
+  // }
+  const config = {
     headers: {
-      'Content-type': 'application/json'
-    }
+      'Content-type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
   };
-
-  // If token, add to headers
-  if (token) {
-    config.headers['x-auth-token'] = token;
-  }
-
   return config;
 };
 

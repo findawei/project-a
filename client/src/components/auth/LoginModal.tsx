@@ -102,6 +102,7 @@ const LoginModal = ({
                   return selected.detail.value;
                 }}
                 name="password"
+                type="password"
                 rules={{
                   required: true,
                 }}
