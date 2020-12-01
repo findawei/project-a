@@ -10,14 +10,6 @@ const initialState = {};
 
 const middleWare = [thunk];
 
-//Before Firebase
-// const store = createStore(
-//   rootReducer,
-//   initialState, composeWithDevTools
-//   (
-//     applyMiddleware(...middleWare))
-//   );
-
   // 1. Enhancing our createStore method with Firebase
 //@ts-ignore
 const createStoreWithFirebase = compose(reactReduxFirebase(firebase))(createStore);

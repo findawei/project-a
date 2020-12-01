@@ -264,19 +264,8 @@ export const tokenConfig = (getState: Function) => {
   // Get token from localstorage
   const user = firebase.auth().currentUser
   // const token = getState().auth.token;
-  const token = user && (user.getIdToken)
+  const token = user && (user.getIdToken())
 
-  // // Headers
-  // const config: IConfigHeaders = {
-  //   headers: {
-  //     'Content-type': 'application/json'
-  //   }
-  // };
-
-  // // If token, add to headers
-  // if (token) {
-  //   config.headers['x-auth-token'] = token;
-  // }
   const config = {
     headers: {
       'Content-type': 'application/json',
