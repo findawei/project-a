@@ -36,7 +36,7 @@ export interface IExistingPurchase {
 }
 
 export interface IAuthForm {
-  isAuthenticated?: boolean;
+  isLoaded?: boolean;
   error: IError;
   clearErrors(): void;
 }
@@ -59,21 +59,45 @@ export interface IError {
 }
 
 export interface IAuthReduxProps {
-  auth: { isAuthenticated: boolean };
+  // auth: { isAuthenticated: boolean };
   error: IError;
-}
-
-export interface IConfigHeaders {
-  headers: {
-    [index: string]: string;
-  };
+  // firebase: {auth: {isLoaded: boolean}}
+  firebase?: any;
+  auth: {firebase: {isLoaded?: any;}}
 }
 
 // // LANDING
 export interface ILanding {
-  auth?: {
-    isAuthenticated: boolean;
-    user: IUser;
+  firebase?: any;
+  auth: {firebase: {isLoaded?: any;}}
+}
+
+// export interface IEventEdit {
+//   current: IExistingEvent;
+//   updateEvent(event: IEvent): void;
+//   error: IError;
+//   clearErrors(): void;
+//   auth?: {
+//     isAuthenticated: boolean;
+//     user: IUser;
+//   };
+// }
+
+// export interface IEventEditReduxProps {
+//   current: IExistingEvent;
+//   event: any;
+//   error: IError;
+//   auth?: {
+//     isAuthenticated: boolean;
+//     user: IUser;
+//   };
+// };
+
+
+
+export interface IConfigHeaders {
+  headers: {
+    [index: string]: string;
   };
 }
 

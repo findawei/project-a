@@ -96,17 +96,18 @@ const Landing = ({ auth }: ILanding) => {
   
   return (
     <div>
-      {/* {auth && auth.isAuthenticated ? authLinks : guestLinks} */}
-      {authLinks}
+      {auth && auth?.firebase?.isLoaded ? authLinks : guestLinks}
+      {console.log(auth?.firebase?.isLoaded)}
+      {/* {authLinks} */}
     </div>
   );
 };
 
 const mapStateToProps = (state: IAuthReduxProps) => ({
-  auth: state.auth
+  auth: state.firebase.auth
 });
 
-export default connect(mapStateToProps, null)(Landing);
+export default connect(mapStateToProps)(Landing);
 
 
 

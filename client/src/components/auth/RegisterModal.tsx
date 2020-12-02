@@ -7,7 +7,7 @@ import { IRegisterModal, IAuthReduxProps } from '../../types/interfaces';
 
 
 const RegisterModal = ({
-  isAuthenticated,
+  isLoaded,
   error,
   register,
   clearErrors
@@ -51,11 +51,11 @@ const RegisterModal = ({
 
     // If authenticated, close modal
     if (modal) {
-      if (isAuthenticated) {
+      if (isLoaded) {
         handleToggle();
       }
     }
-  }, [error, handleToggle, isAuthenticated, modal]);
+  }, [error, handleToggle, isLoaded, modal]);
 
   return (
     <div>
@@ -138,7 +138,7 @@ const RegisterModal = ({
 };
 
 const mapStateToProps = (state: IAuthReduxProps) => ({
-  isAuthenticated: state.auth.isAuthenticated,
+  auth: state.firebase.auth,
   error: state.error
 });
 

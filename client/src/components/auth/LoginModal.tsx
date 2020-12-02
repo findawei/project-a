@@ -8,7 +8,7 @@ import { useForm, Controller } from "react-hook-form";
 
 
 const LoginModal = ({
-  isAuthenticated,
+  isLoaded,
   error,
   login,
   clearErrors
@@ -59,9 +59,9 @@ const LoginModal = ({
     } 
 
     // If authenticated, redirect to home
-      if (isAuthenticated) {
+      if (isLoaded) {
       }
-  }, [error, isAuthenticated, ]);
+  }, [error, isLoaded, ]);
 
   return (
     <div>
@@ -122,7 +122,7 @@ const LoginModal = ({
 };
 
 const mapStateToProps = (state: IAuthReduxProps) => ({
-  isAuthenticated: state.auth.isAuthenticated,
+  auth: state.firebase.auth,
   error: state.error
 });
 

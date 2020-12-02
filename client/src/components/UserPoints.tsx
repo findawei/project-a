@@ -6,13 +6,13 @@ import { IAuthReduxProps, ILanding } from '../types/interfaces';
 
 const UserPoints = ({auth}: ILanding) => {
 
-  const [points, setPointsE] = useState(auth!.user.points)
+  // const [points, setPointsE] = useState(auth!.user.points)
 
   
 
     return (
           <IonItem>
-            {points}
+            {/* {points} */}
           </IonItem>
       );
 }
