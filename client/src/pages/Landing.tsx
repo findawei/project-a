@@ -96,7 +96,8 @@ const Landing = ({ auth }: ILanding) => {
   
   return (
     <div>
-      {auth && auth.isAuthenticated ? authLinks : guestLinks}
+      {/* {auth && auth.isAuthenticated ? authLinks : guestLinks} */}
+      {authLinks}
     </div>
   );
 };

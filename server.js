@@ -5,6 +5,7 @@ const morgan =require ('morgan');
 const path =require('path');
 const cors =require( 'cors');
 const config =require( './config');
+const decodeIDToken = require('./authenticateToken');
 
 const items = require('./routes/api/items');
 const events = require('./routes/api/events');
@@ -28,6 +29,8 @@ app.use(morgan('dev'));
 //       extended: false
 //     })
 //   );
+app.use(decodeIDToken);
+
 
 //connect to db
 const db = `${MONGO_URI}/${MONGO_DB_NAME}`;
@@ -44,11 +47,11 @@ mongoose
     .catch(err=>console.log(err));
 
 // Routes
-app.use("/api/users", users);
+// app.use("/api/users", users);
 app.use('/api/events', events);
-app.use('/api/auth', authRoutes);
-app.use('/api/items', items);
-app.use('/api/purchases', purchases);
+// app.use('/api/auth', authRoutes);
+// app.use('/api/items', items);
+// app.use('/api/purchases', purchases);
 
 
 const { PORT } = config;
