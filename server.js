@@ -26,6 +26,8 @@ app.use(morgan('dev'));
 //       extended: false
 //     })
 //   );
+app.use(bodyParser.json());
+
 
 //connect to db
 const db = `${MONGO_URI}/${MONGO_DB_NAME}`;
@@ -47,10 +49,6 @@ app.use('/api/events', events);
 app.use('/api/auth', authRoutes);
 app.use('/api/items', items);
 app.use('/api/purchases', purchases);
-
-
-
-app.use(bodyParser.json());
 
 
 const { PORT } = config;
