@@ -12,27 +12,43 @@ import {
   REGISTER_FAIL
 } from './types';
 import { IAuthFunction, IConfigHeaders, IUser } from '../../types/interfaces';
+import firebase from '../../firebase';
+
 
 // Check token & load user
-export const loadUser = () => (dispatch: Function, getState: Function) => {
+export const loadUser = (id: string) => async(dispatch: Function, getState: Function) => {
   // User loading
+  try{
   dispatch({ type: USER_LOADING });
-
-  axios
-    .get('/api/auth/user', tokenConfig(getState))
-    .then(res =>
-      dispatch({
-        type: USER_LOADED,
-        payload: res.data
-      })
-    )
-    .catch(err => {
-      dispatch(returnErrors(err.response.data, err.response.status));
-      dispatch({
-        type: AUTH_ERROR
-      });
+  const user = await firebase.firestore().collection('users').doc(id).get();
+  if(user.exists) {
+    const userData = user.data() as IUser;
+    dispatch({
+      type: USER_LOADED,
+      payload: userData
     });
-};
+  }
+} catch (err) {
+  console.log(err);
+  // axios
+  //   .get('/api/auth/user', tokenConfig(getState))
+  //   .then(res =>
+  //     dispatch({
+  //       type: USER_LOADED,
+  //       payload: res.data
+  //     })
+  //   )
+  //   .catch(err => {
+  //     dispatch(returnErrors(err.response.data, err.response.status));
+  //     dispatch({
+  //       type: AUTH_ERROR
+  //     });
+  //   });
+}};
+
+
+
+
 
 // Log points to user profile
 export const logPoints = (user: IUser) => (dispatch: Function, getState: Function) => {
@@ -84,35 +100,53 @@ export const register = ({ name, email, password }: IAuthFunction) => (
 };
 
 // Login User
-export const login = ({ email, password }: IAuthFunction) => (
+export const login = ({ email, password }: IAuthFunction) => async(
   dispatch: Function
 ) => {
-  // Headers
-  const config = {
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  };
-
-  // Request body
-  const body = JSON.stringify({ email, password });
-
-  axios
-    .post('/api/auth/login', body, config)
+  try{
+    firebase
+    .auth()
+    .signInWithEmailAndPassword(email, password)
     .then(res =>
-      dispatch({
-        type: LOGIN_SUCCESS,
-        payload: res.data
-      })
-    )
-    .catch(err => {
-      dispatch(
-        returnErrors(err.response.data, err.response.status, 'LOGIN_FAIL')
-      );
-      dispatch({
-        type: LOGIN_FAIL
-      });
-    });
+          dispatch({
+            type: LOGIN_SUCCESS
+            // payload: res.data
+          })
+        )
+  } catch(err) {
+        dispatch(
+          returnErrors(err.response.data, err.response.status, 'LOGIN_FAIL')
+        );
+        dispatch({
+          type: LOGIN_FAIL
+        });
+      }
+  // // Headers
+  // const config = {
+  //   headers: {
+  //     'Content-Type': 'application/json'
+  //   }
+  // };
+
+  // // Request body
+  // const body = JSON.stringify({ email, password });
+
+  // axios
+  //   .post('/api/auth/login', body, config)
+  //   .then(res =>
+  //     dispatch({
+  //       type: LOGIN_SUCCESS,
+  //       payload: res.data
+  //     })
+  //   )
+  //   .catch(err => {
+  //     dispatch(
+  //       returnErrors(err.response.data, err.response.status, 'LOGIN_FAIL')
+  //     );
+  //     dispatch({
+  //       type: LOGIN_FAIL
+  //     });
+  //   });
 };
 
 // Logout User

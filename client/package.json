@@ -23,7 +23,7 @@
     "cordova-plugin-contacts": "^3.0.1",
     "cordova-res": "^0.14.1",
     "date-fns": "^2.16.1",
-    "firebase": "^8.1.1",
+    "firebase": "^8.2.0",
     "install": "^0.13.0",
     "ionicons": "^5.2.3",
     "npm": "^6.14.8",
