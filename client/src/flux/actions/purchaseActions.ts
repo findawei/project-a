@@ -2,7 +2,6 @@ import axios from 'axios';
 import {GET_PURCHASES, ADD_PURCHASES, PURCHASES_LOADING, PURCHASE_ERROR
 } from './types';
 import { tokenConfig } from './authActions';
-import { returnErrors } from './errorActions';
 import {IPurchase} from '../../types/interfaces';
 
 
@@ -12,7 +11,9 @@ export const getPurchases = () => (
   ) => {
     dispatch(setPurchasesLoading());
     axios
-        .get('/api/purchases', tokenConfig(getState))
+        .get('/api/purchases', 
+        // tokenConfig(getState)
+        )
         .then(res=>
             dispatch({
                 type: GET_PURCHASES,
@@ -20,7 +21,6 @@ export const getPurchases = () => (
             })
         )
         .catch(err => {
-          dispatch(returnErrors(err.response.data, err.response.status, 'PURCHASE_ERROR'));
           dispatch({
             type: PURCHASE_ERROR
           });
@@ -32,7 +32,9 @@ export const addPurchases = (purchase: IPurchase) => (
   getState: Function
   ) => {
     axios
-    .post('/api/purchases', purchase, tokenConfig(getState))
+    .post('/api/purchases', purchase, 
+    // tokenConfig(getState)
+    )
     .then(res=>
         dispatch({
             type: ADD_PURCHASES,
@@ -40,9 +42,6 @@ export const addPurchases = (purchase: IPurchase) => (
         })
         )
         .catch(err => {
-          dispatch(
-            returnErrors(err.response.data, err.response.status, 'PURCHASE_ERROR')
-            );
           dispatch({
             type: PURCHASE_ERROR
           });

@@ -1,10 +1,9 @@
 // Firebase App (the core Firebase SDK) is always required and
 // must be listed before other Firebase SDKs
-import firebase from "firebase/app";
+import firebase from "firebase";
 
 // Add the Firebase services that you want to use
 // We only want to use Firebase Auth here
-import "firebase/auth";  
 
 // Your web app's Firebase configuration
   var firebaseConfig = {
@@ -17,6 +16,13 @@ import "firebase/auth";
     appId: "1:1072508881484:web:ae84ec800f9b3d7a3642e9"
   };
   // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
+
+  try {
+    firebase.initializeApp(firebaseConfig);
+  } catch (err) {
+    if (!/already exists/.test(err.message)) {
+      console.error('Firebase initialization error', err.stack);
+    }
+  }
 
   export default firebase;

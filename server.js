@@ -5,6 +5,7 @@ const morgan =require ('morgan');
 const path =require('path');
 const cors =require( 'cors');
 const config =require( './config');
+const decodeIDToken = require('./middleware/auth');
 
 const items = require('./routes/api/items');
 const events = require('./routes/api/events');
@@ -16,6 +17,9 @@ const { MONGO_URI, MONGO_DB_NAME } = config;
 
 const app = express();
 
+
+app.use(bodyParser.json());
+
 // CORS Middleware
 app.use(cors());
 // Logger Middleware
@@ -26,7 +30,7 @@ app.use(morgan('dev'));
 //       extended: false
 //     })
 //   );
-app.use(bodyParser.json());
+app.use(decodeIDToken);
 
 
 //connect to db
@@ -44,7 +48,7 @@ mongoose
     .catch(err=>console.log(err));
 
 // Routes
-app.use("/api/users", users);
+// app.use("/api/users", users);
 app.use('/api/events', events);
 app.use('/api/auth', authRoutes);
 app.use('/api/items', items);

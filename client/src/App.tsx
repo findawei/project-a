@@ -27,16 +27,15 @@ import './theme/variables.css';
 
 const App = () => {
  
-  // useEffect(() => {
-  //   store.dispatch(loadUser());
-  // }, []);
- 
-  return(
- <Provider store={store}>
-
-  <IonApp>
-    <Landing />
-  </IonApp>
+  useEffect(() => {
+    store.dispatch(loadUser());
+  }, []);
+  
+return(
+  <Provider store={store}>
+    <IonApp>
+      <Landing />
+    </IonApp>
   </Provider>
   );
 };

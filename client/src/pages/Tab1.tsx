@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { IonHeader, IonPage, IonTitle, IonModal, IonToolbar, IonIcon, IonContent, IonButtons, IonButton, IonBadge } from '@ionic/react';
 import './Tab1.css';
 import Calendar from '../components/Calendar';
-import EventAdd from '../components/EventAdd';
+// import EventAdd from '../components/EventAdd';
 import { add, fileTrayFullOutline } from 'ionicons/icons';
 import InviteModal from '../components/InviteModal';
 import { getInvites } from '../flux/actions/inviteActions';
@@ -15,12 +15,12 @@ const Tab1 = ({getInvites, invite, onDismissModal}: IInviteModal) => {
   const [showEventModal, setShowEventModal] = useState(false);
   const [showInviteModal, setShowInviteModal] = useState(false);
 
-  useEffect(() => { 
-    getInvites(); 
-  }, [getInvites]);
+  // useEffect(() => { 
+  //   getInvites(); 
+  // }, [getInvites]);
 
-  const { invites } = invite;
-  const inviteCount = invites.length
+  // const { invites } = invite;
+  // const inviteCount = invites.length
 ;
 
   return (
@@ -28,9 +28,9 @@ const Tab1 = ({getInvites, invite, onDismissModal}: IInviteModal) => {
       <IonHeader>
         <IonToolbar>
         <IonButtons slot="start">
-          <IonButton onClick={() => setShowEventModal(true)}>
+          {/* <IonButton onClick={() => setShowEventModal(true)}>
             <IonIcon slot="icon-only" icon={add}  />
-          </IonButton>
+          </IonButton> */}
         </IonButtons>            
           <IonTitle>
           <div className="ion-text-center">
@@ -41,7 +41,7 @@ const Tab1 = ({getInvites, invite, onDismissModal}: IInviteModal) => {
           <IonButton 
           onClick={() => setShowInviteModal(true)}>
             <IonIcon icon={fileTrayFullOutline}/>
-            <IonBadge>{inviteCount}</IonBadge>
+            {/* <IonBadge>{inviteCount}</IonBadge> */}
           </IonButton>
         </IonButtons>       
         </IonToolbar>
@@ -54,9 +54,9 @@ const Tab1 = ({getInvites, invite, onDismissModal}: IInviteModal) => {
           swipeToClose={true}
           cssClass="session-list-filter"
           >
-            <EventAdd
+            {/* <EventAdd
               onDismissModal={() => setShowEventModal(false)}
-            />
+            /> */}
           </IonModal>
           <IonModal
           isOpen={showInviteModal}

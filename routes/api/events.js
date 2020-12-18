@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../../middleware/auth')
 const Event = require('../../models/Event');
-const User = require('../../models/User');
+// const User = require('../../models/User');
 // const format = require("date-fns");
 var sender = require('../../email/mailer');
 const config =require( '../../config');
@@ -13,33 +13,26 @@ const { VERIFICATION_TOKEN } = config;
 // @route   GET api/events/
 // @desc    Get all events for a specific user
 // @access  Private
-router.get('/', auth, async (req, res) => {
+router.get('/', async (req, res) => {
   try {
-  const events = await Event.find({user: req.user.id}).sort({
-    date: -1,});
+
+  // const events = await Event.find({user: req.user.id}).sort({
+  //   date: -1,});
+  
+  const events = await Event.find();
   if (!events) throw Error('No items');
   res.status(200).json(events);
+
+  // if (auth) {
+  //   console.log('authenticated!', auth);
+  //   var events = 10;
+  //   return res.send('Hi, from within the phones router POST');}
+
 } catch (e) {
   res.status(400).json({ msg: e.message });
 }
 });
 
-// @route   GET api/events/invites
-// @desc    Get all events for a specific user
-// @access  Private
-router.get('/invites', auth, async (req, res) => {
-  try {
-  const user = await User.findById(req.user.id)
-  const useremail = user.email
-  // Get the current user email and search for all events that have email in attendees
-  const events = await Event.find({"attendees.email": useremail, "isOrganizer": true, "attendees.status" : {$exists: false}}).sort({
-    date: -1,});
-  if (!events) throw Error('No items');
-  res.status(200).json(events);
-} catch (e) {
-  res.status(400).json({ msg: e.message });
-}
-});
 
 // @route   get api/events/:id
 // @desc    get specific event

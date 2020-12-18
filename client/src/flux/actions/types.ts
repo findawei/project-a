@@ -25,6 +25,8 @@ export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS";
 export const REGISTER_SUCCESS = "REGISTER_SUCCESS";
 export const REGISTER_FAIL = "REGISTER_FAIL";
 export const USER_POINTS = "USER_POINTS";
+export const RESET_SUCCESS = "RESET_SUCCESS"
+export const RESET_ERROR = "RESET_ERROR"
 
 export const GET_ITEMS = "GET_ITEMS";
 export const ADD_ITEM = "ADD_ITEM";

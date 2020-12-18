@@ -14,7 +14,7 @@ export const Logout = ({ logout }: ILogoutProps) => {
 
 const logoutButton = () => {
   logout();
-  history.push('/tab1/');
+  history.push('/');
 }
 
   return (

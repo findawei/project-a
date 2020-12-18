@@ -5,3 +5,9 @@ ion-img {
     display: block;
 }
 
+ion-card {
+    max-width: 400px;
+    align-items: center;
+    margin: auto;
+    display: block;
+}

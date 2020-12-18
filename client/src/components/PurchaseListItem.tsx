@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import {  IonItem, IonLabel, IonButton, IonGrid, IonRow, IonCol, IonItemDivider } from '@ionic/react';
+import React from 'react';
+import {  IonItem, IonLabel } from '@ionic/react';
 import {connect} from 'react-redux';
 import { IPurchaseListItem } from '../types/interfaces';
 import {format} from "date-fns";

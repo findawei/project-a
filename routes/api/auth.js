@@ -56,42 +56,28 @@ router.post('/login', async (req, res) => {
  */
 
 router.post('/register', async (req, res) => {
-  const { name, email, password } = req.body;
-
-  // Simple validation
-  if (!name || !email || !password) {
-    return res.status(400).json({ msg: 'Please enter all fields' });
-  }
+  const { _id } = req.body;
 
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findById(_id);
     if (user) throw Error('User already exists');
 
-    const salt = await bcrypt.genSalt(10);
-    if (!salt) throw Error('Something went wrong with bcrypt');
-
-    const hash = await bcrypt.hash(password, salt);
-    if (!hash) throw Error('Something went wrong hashing the password');
-
     const newUser = new User({
-      name,
-      email,
-      password: hash
+      _id
+      // email,
+      // password: hash
     });
 
     const savedUser = await newUser.save();
     if (!savedUser) throw Error('Something went wrong saving the user');
 
-    const token = jwt.sign({ id: savedUser._id }, JWT_SECRET, {
-      expiresIn: '1 week'
-    });
-
+    // const token = jwt.sign({ id: savedUser._id }, JWT_SECRET, {
+    //   expiresIn: '1 week'
+    // });
     res.status(200).json({
-      token,
+      // token,
       user: {
         id: savedUser.id,
-        name: savedUser.name,
-        email: savedUser.email
       }
     });
   } catch (e) {

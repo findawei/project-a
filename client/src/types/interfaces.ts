@@ -1,4 +1,3 @@
-import { E_ERROR } from './enum';
 
 // REACT
 export interface ITarget {
@@ -9,9 +8,9 @@ export interface ITarget {
 }
 
 // ERRORS
-export interface IMsg {
-  msg: string | any;
-}
+// export interface IMsg {
+//   msg: string | any;
+// }
 
 // // AUTH
 export interface IUser {
@@ -37,12 +36,17 @@ export interface IExistingPurchase {
 
 export interface IAuthForm {
   isAuthenticated?: boolean;
-  error: IError;
-  clearErrors(): void;
+  authMsg: string;
 }
 
 export interface ILoginModal extends IAuthForm {
   login(user: IUser): void;
+  authMsg: string;
+
+}
+
+export interface IResetPassword extends IAuthForm {
+  resetPassword(email:string): void;
 }
 
 export interface IRegisterModal extends IAuthForm {
@@ -53,14 +57,13 @@ export interface ILogoutProps {
   logout(): void;
 }
 
-export interface IError {
-  id: E_ERROR;
-  msg: IMsg;
-}
+// export interface IError {
+//   authMsg:string;
+// }
 
 export interface IAuthReduxProps {
   auth: { isAuthenticated: boolean };
-  error: IError;
+  authMsg: string;
 }
 
 export interface IConfigHeaders {
@@ -157,8 +160,6 @@ export interface IEventAttendee{
 export interface IEventAdd {
   addEvent(event: IEvent): void;
   onDismissModal: () => void;
-  error: IError;
-  clearErrors(): void;
 }
 
 export interface IAttendeeModal {
@@ -178,7 +179,6 @@ export interface IPurchaseHistory {
 
 export interface IPurchaseReduxProps{
   purchase: {purchases: IExistingPurchase[];};
-  error: IError;
   auth?: {
     isAuthenticated: boolean;
     user: IUser;
@@ -201,7 +201,6 @@ export interface ICalendar {
 
 export interface IEventReduxProps{
   event:{events: IExistingEvent[];}
-  error: IError;
   auth?: {
     isAuthenticated: boolean;
     user: IUser;
@@ -242,8 +241,6 @@ export interface IEventLogReduxProps {
 export interface IEventEdit {
   current: IExistingEvent;
   updateEvent(event: IEvent): void;
-  error: IError;
-  clearErrors(): void;
   auth?: {
     isAuthenticated: boolean;
     user: IUser;
@@ -253,7 +250,6 @@ export interface IEventEdit {
 export interface IEventEditReduxProps {
   current: IExistingEvent;
   event: any;
-  error: IError;
   auth?: {
     isAuthenticated: boolean;
     user: IUser;
@@ -273,7 +269,6 @@ export interface IItemStore {
 
 export interface IItemReduxProps {
   item: {items: IExistingItem[];};
-  error: IError;
   auth?: {
     isAuthenticated: boolean;
     user: IUser;
@@ -386,7 +381,6 @@ export interface IInviteModal {
 }
 export interface IInviteReduxProps {
   invite: {invites: IExistingInvite[];}
-  error: IError;
 }
 
 // // <<<<<<<<<<<>>>>>>>>>>>>

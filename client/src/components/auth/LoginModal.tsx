@@ -1,23 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import {IonItem, IonInput, IonButton, IonToast, IonRoute } from "@ionic/react";
+import {IonItem, IonInput, IonButton, IonToast, IonRoute, IonTitle } from "@ionic/react";
 import { connect } from 'react-redux';
 import { login } from '../../flux/actions/authActions';
-import { clearErrors } from '../../flux/actions/errorActions';
 import { ILoginModal, IAuthReduxProps } from '../../types/interfaces';
-
+import { useForm, Controller, useFieldArray } from "react-hook-form";
 
 const LoginModal = ({
   isAuthenticated,
-  error,
+  authMsg,
   login,
-  clearErrors
 }: ILoginModal) => {
 
+  let initialValues = {
+    email: "",
+    password: ""
+  }
   // const [modal, setModal] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [msg, setMsg] = useState();
-  const [showToast1, setShowToast1] = useState(false);
+  // const [email, setEmail] = useState('');
+  // const [password, setPassword] = useState('');
+ 
   // const [redirectToMain, setRedirectToMain] = useState(false);
 
   // const handleToggle = useCallback(() => {
@@ -25,63 +26,79 @@ const LoginModal = ({
   //   clearErrors();
   //   setModal(!modal);
   // }, [clearErrors, modal]);
+  const { control, handleSubmit, formState, reset, errors } = useForm({
+    defaultValues: { ...initialValues },
+    mode: "onChange"
+  });
 
+  const [user, setUser] = useState();
+  // const [msg, setMsg] = useState();
+  const [showToast1, setShowToast1] = useState(false);
+  /**
+   *
+   * @param _fieldName
+   */
+  const showError = (_fieldName: string) => {
+    let error = (errors as any)[_fieldName];
+    return error ? (
+      <div style={{ color: "red", fontWeight: "bold" }}>
+        {error.message || "Field Is Required"}
+      </div>
+    ) : null;
+  };
 
-  const handleOnSubmit = (e: any) => {
-    e.preventDefault();
-
-    const user = { email, password };
-
+  const handleOnSubmit = (user: any) => {
     // Attempt to login
+    setUser(user)
     login(user);
   };
   
 
-  useEffect(() => {
-    // Check for register error
-    if (error.id === 'LOGIN_FAIL') {
-      setMsg(error.msg.msg);
-      setShowToast1(true)
-    } 
-
-    // If authenticated, redirect to home
-      if (isAuthenticated) {
-      }
-  }, [error, isAuthenticated, ]);
 
   return (
     <div>
-            <IonToast 
-              position="top"
-              isOpen={showToast1} 
-              onDidDismiss={() => setShowToast1(false)} 
-              message={msg}
-              duration={1000}
-              /> 
-          <form>
-              <IonItem>
-              <IonInput
+          <form onSubmit={handleSubmit(handleOnSubmit)}>
+          <IonItem>
+              <Controller
+                as={IonInput}
                 type="email"
-                name="email"
-                id="email"
                 placeholder="Email"
-                onIonChange={e => setEmail(e.detail.value!)}              
-                />
-                </IonItem>
-              <IonItem>
-              <IonInput
+                control={control}
+                onChangeName="onIonChange"
+                onChange={([selected]) => {
+                  return selected.detail.value;
+                }}
+                name="email"
+                rules={{
+                  required: true
+                }}
+              />
+            </IonItem>
+            {showError("email")}
+            {/* {authMsg && <p className="auth-message">{authMsg}</p>}
+          {console.log(authMsg)} */}
+            <IonItem>
+              <Controller
+                as={IonInput}
                 type="password"
-                name="password"
-                id="password"
                 placeholder="Password"
-                className="mb-3"
-                onIonChange={e => setPassword(e.detail.value!)}
-                />
-                </IonItem>
+                control={control}
+                onChangeName="onIonChange"
+                onChange={([selected]) => {
+                  return selected.detail.value;
+                }}
+                name="password"
+                rules={{
+                  required: true
+                }}
+              />
+            </IonItem>
+            {showError("password")}
+              
               <IonButton
-              onClick={handleOnSubmit}
+              type="submit"
               expand="block"
-              >
+             >
                 Login
               </IonButton>
           </form>
@@ -91,7 +108,7 @@ const LoginModal = ({
 
 const mapStateToProps = (state: IAuthReduxProps) => ({
   isAuthenticated: state.auth.isAuthenticated,
-  error: state.error
+  authMsg: state.authMsg
 });
 
-export default connect(mapStateToProps, { login, clearErrors })(LoginModal);
+export default connect(mapStateToProps, { login })(LoginModal);

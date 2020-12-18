@@ -1,30 +1,27 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { IonContent, IonItem, IonInput, IonButton, IonButtons, IonToolbar, IonTitle, IonHeader, IonModal, IonToast, IonFooter, IonLabel } from "@ionic/react";
+import { IonContent, IonItem, IonInput, IonButton, IonButtons, IonToolbar, IonTitle, IonHeader, IonModal, IonToast, IonFooter, IonLabel, IonCard, IonCardContent, IonCol, IonRow } from "@ionic/react";
 import { connect } from 'react-redux';
 import { register } from '../../flux/actions/authActions';
-import { clearErrors } from '../../flux/actions/errorActions';
 import { IRegisterModal, IAuthReduxProps } from '../../types/interfaces';
 
 
 const RegisterModal = ({
   isAuthenticated,
-  error,
+  authMsg,
   register,
-  clearErrors
 }: IRegisterModal) => {
 
   const [modal, setModal] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [msg, setMsg] = useState();
+  const [message, setMessage] = useState();
   const [showToast1, setShowToast1] = useState(false);
 
   const handleToggle = useCallback(() => {
     // Clear errors
-    clearErrors();
     setModal(!modal);
-  }, [clearErrors, modal]);
+  }, [ modal]);
 
 
 
@@ -42,20 +39,20 @@ const RegisterModal = ({
     register(user);
   };
 
-  useEffect(() => {
-    // Check for register error
-    if (error.id === 'REGISTER_FAIL') {
-      setMsg(error.msg.msg);
-      setShowToast1(true)
-    }
+  // useEffect(() => {
+  //   // Check for register error
+  //   if (error.id === 'REGISTER_FAIL') {
+  //     setMessage(error.message.msg);
+  //     setShowToast1(true)
+  //   }
 
-    // If authenticated, close modal
-    if (modal) {
-      if (isAuthenticated) {
-        handleToggle();
-      }
-    }
-  }, [error, handleToggle, isAuthenticated, modal]);
+  //   // If authenticated, close modal
+  //   if (modal) {
+  //     if (isAuthenticated) {
+  //       handleToggle();
+  //     }
+  //   }
+  // }, [error, handleToggle, isAuthenticated, modal]);
 
   return (
     <div>
@@ -77,10 +74,13 @@ const RegisterModal = ({
               position="top"
               isOpen={showToast1} 
               onDidDismiss={() => setShowToast1(false)} 
-              message={msg}
+              message={message}
               duration={1000}
               /> 
           <form>
+
+  
+
           <IonHeader>
               <IonToolbar>
               <IonButtons slot="start">
@@ -88,14 +88,21 @@ const RegisterModal = ({
                     Cancel
                 </IonButton>
               </IonButtons>
-              <IonTitle>
-                <div className="ion-text-center">
-                Register
-                </div>
+              <IonTitle className="ion-text-center">
+               Register
               </IonTitle>
             </IonToolbar>
             </IonHeader>
-              <IonItem>
+
+            <IonRow class="ion-justify-content-center">
+      <IonCol>
+      <IonCard class="ion-card">
+        <IonCardContent>
+          
+
+          
+      
+              {/* <IonItem>
               <IonInput
                 required
                 type="text"
@@ -104,7 +111,7 @@ const RegisterModal = ({
                 placeholder="Name"
                 onIonChange={e => setName(e.detail.value!)}
               />
-              </IonItem>
+              </IonItem> */}
               <IonItem>
               <IonInput
                 required
@@ -126,11 +133,17 @@ const RegisterModal = ({
               />
               </IonItem>
               <IonButton
+              expand="block"
               onClick={handleOnSubmit}
               >
                 Register
               </IonButton>
-          </form>
+          </IonCardContent>
+      </IonCard>
+      </IonCol>
+      </IonRow>
+      </form>
+
         </IonContent>
       </IonModal>
     </div>
@@ -139,9 +152,10 @@ const RegisterModal = ({
 
 const mapStateToProps = (state: IAuthReduxProps) => ({
   isAuthenticated: state.auth.isAuthenticated,
-  error: state.error
+  authMsg: state.authMsg
+
 });
 
-export default connect(mapStateToProps, { register, clearErrors })(
+export default connect(mapStateToProps, { register })(
   RegisterModal
 );

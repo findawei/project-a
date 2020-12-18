@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import {  IonItem, IonIcon, IonLabel, IonButton, IonCard, IonCol, IonBadge, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle, IonContent, IonModal } from '@ionic/react';
+import {   IonCard, IonCol, IonBadge, IonCardContent, IonCardHeader, IonCardTitle } from '@ionic/react';
 import {connect} from 'react-redux';
 import {deleteItem, setCurrentItem} from '../flux/actions/itemActions';
 import { IItemListItem, IItemReduxProps } from '../types/interfaces';
-import { closeCircle } from 'ionicons/icons';
-import ItemDetails from './ItemDetails';
+
 
 const ItemListItem = ({ item, auth, setCurrentItem, deleteItem }: IItemListItem) => {
 

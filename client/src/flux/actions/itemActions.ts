@@ -2,7 +2,6 @@ import axios from 'axios';
 import {ITEM_ERROR, GET_ITEMS, SET_CURRENTITEM, UPDATE_ITEM, CLEAR_CURRENTITEM, ITEMS_LOADING, ADD_ITEM, DELETE_ITEM 
 } from './types';
 import { tokenConfig } from './authActions';
-import { returnErrors } from './errorActions';
 import {IItem, IExistingItem} from '../../types/interfaces';
 
 
@@ -12,7 +11,9 @@ export const getItems = () => (
   ) => {
     dispatch(setItemsLoading());
     axios
-        .get('/api/items', tokenConfig(getState))
+        .get('/api/items', 
+        // tokenConfig(getState)
+        )
         .then(res=>
             dispatch({
                 type: GET_ITEMS,
@@ -20,7 +21,6 @@ export const getItems = () => (
             })
         )
         .catch(err => {
-          dispatch(returnErrors(err.response.data, err.response.status, 'ITEM_ERROR'));
           dispatch({
             type: ITEM_ERROR
           });
@@ -32,7 +32,9 @@ export const addItem = (item: IItem) => (
   getState: Function
   ) => {
     axios
-    .post('/api/items', item, tokenConfig(getState))
+    .post('/api/items', item, 
+    // tokenConfig(getState)
+    )
     .then(res=>
         dispatch({
             type: ADD_ITEM,
@@ -40,9 +42,7 @@ export const addItem = (item: IItem) => (
         })
         )
         .catch(err => {
-          dispatch(
-            returnErrors(err.response.data, err.response.status, 'ITEM_ERROR')
-            );
+        
           dispatch({
             type: ITEM_ERROR
           });
@@ -54,14 +54,15 @@ export const updateItem = (item: IItem) => (
     getState: Function
     ) => {
     axios
-    .put(`/api/items/${item._id}`, item, tokenConfig(getState))
+    .put(`/api/items/${item._id}`, item, 
+    // tokenConfig(getState)
+    )
     .then(res=>
       dispatch({
         type: UPDATE_ITEM,
         payload: res.data
       }))
       .catch(err => {
-        dispatch(returnErrors(err.response.data, err.response.status, 'ITEM_ERROR'));
         dispatch({
           type: ITEM_ERROR
         });
@@ -73,7 +74,9 @@ export const updateItem = (item: IItem) => (
     getState: Function
     ) =>{
     axios
-      .delete(`/api/items/${id}`, tokenConfig(getState))
+      .delete(`/api/items/${id}`, 
+      // tokenConfig(getState)
+      )
       .then(res =>
         dispatch({
         type: DELETE_ITEM,
@@ -81,7 +84,6 @@ export const updateItem = (item: IItem) => (
     })
     )
     .catch(err => {
-      dispatch(returnErrors(err.response.data, err.response.status, 'ITEM_ERROR'));
       dispatch({
         type: ITEM_ERROR
       });

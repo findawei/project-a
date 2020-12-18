@@ -23,7 +23,6 @@ const PrivateRoute = ({ component: Component, isAuthenticated, ...rest }: IPriva
 
 const mapStateToProps = (state: IAuthReduxProps) => ({
   isAuthenticated: state.auth.isAuthenticated,
-  error: state.error
 });
 
 export default connect(mapStateToProps)(PrivateRoute);
