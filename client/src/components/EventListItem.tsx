@@ -22,7 +22,7 @@ const EventListItem = ({ event, deleteEvent, setCurrent }: IEventListItem) => {
                 <p>{event.location}</p>
                 <p>{format(new Date(event.dateStart), "MMM d', 'h:mm aaa")}&mdash;&nbsp;
                   {format(new Date(event.dateEnd), "MMM d', 'h:mm aaa")}</p>
-                  <p>
+                  <div>
                   {event.isOrganizer? "" :
                   <div>
                   <IonIcon
@@ -33,10 +33,10 @@ const EventListItem = ({ event, deleteEvent, setCurrent }: IEventListItem) => {
                     {event.organizer?.email} (organizer)
                     </div>
                     }
-                  </p>
+                  </div>
                   {/* MAP the ATTENDEES */}
                   {event.attendees.map((attendee, _id)=> (
-                  <p key={attendee._id} >
+                  <div key={attendee._id} >
                      <IonIcon
                       icon={checkmarkCircle}
                       color="success"
@@ -57,7 +57,7 @@ const EventListItem = ({ event, deleteEvent, setCurrent }: IEventListItem) => {
                       }
                     />
                     {attendee.email}
-                  </p>
+                  </div>
                   )
                   )}
                 </IonLabel>

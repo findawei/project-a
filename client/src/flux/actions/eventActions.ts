@@ -5,16 +5,13 @@ import { tokenConfig } from './authActions';
 import {IEvent, IExistingEvent} from '../../types/interfaces';
 
 export const getEvents = () => async(
-  dispatch: Function, 
-  getState: Function
+  dispatch: Function
   ) => {
     const header = await tokenConfig();
 
     dispatch(setEventsLoading());
     axios
-        .get('/api/events', 
-        header
-        )
+        .get('/api/events', header )
         .then(res=>
             dispatch({
                 type: GET_EVENTS,
@@ -50,14 +47,13 @@ export const getEvent = (id: string) => (
       });
 };
 
-export const addEvent = (event: IEvent) => (
-  dispatch: Function,
-  getState: Function
-  ) => {
+export const addEvent = (event: IEvent) => async (
+  dispatch: Function  ) => {
+
+    const header = await tokenConfig();
+try{
     axios
-    .post('/api/events', event, 
-    // tokenConfig(getState)
-    )
+    .post('/api/events', event, header)
     .then(res=>
         dispatch({
             type: ADD_EVENT,
@@ -65,12 +61,19 @@ export const addEvent = (event: IEvent) => (
         })
         )
         .catch(err => {
-        
           dispatch({
-            type: EVENT_ERROR
+            type: EVENT_ERROR,
+            payload: err.data
           });
         });
-};
+} catch (err){
+  dispatch({
+    type: EVENT_ERROR,
+    payload: err.data
+  });
+}
+
+}
 
 // export const updateEvent = (event: IEvent) => (
 //   dispatch: Function,
@@ -135,14 +138,13 @@ export const setCurrent = (event: IExistingEvent) => {
     };
 };
 
-  export const deleteEvent = (id: string) => (
-    dispatch: Function,
-    getState: Function
+  export const deleteEvent = (id: string) => async(
+    dispatch: Function
     ) =>{
+      const header = await tokenConfig();
+  try{
     axios
-      .delete(`/api/events/${id}`, 
-      // tokenConfig(getState)
-      )
+      .delete(`/api/events/${id}`, header)
       .then(res =>
         dispatch({
         type: DELETE_EVENT,
@@ -151,9 +153,16 @@ export const setCurrent = (event: IExistingEvent) => {
     )
     .catch(err => {
       dispatch({
-        type: EVENT_ERROR
+        type: EVENT_ERROR,       
+        payload: err.data
       });
     });
+  }catch (err){
+      dispatch({
+        type: EVENT_ERROR,
+        payload: err.data
+      });
+    }
 };
 
 // // Delete attendee

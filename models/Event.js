@@ -2,17 +2,17 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const EventSchema = new Schema({
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'users'
-  },
+  // user: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: 'users'
+  // },
   eventId:{
     type: Number,
-    required: true
+    required: false
   },
   isOrganizer:{
     type: Boolean,
-    required: true
+    required: false
   },
   title: {
     type: String,
@@ -48,17 +48,17 @@ const EventSchema = new Schema({
   endTime: {
     type: Date,
     required: false
-  },
-  organizer: {
-      email: {
-        type: String,
-        ref: 'users'
-      },
-      name: {
-        type: String,
-        ref: 'users'
-    }
-}
+  }
+//   organizer: {
+//       email: {
+//         type: String,
+//         ref: 'users'
+//       },
+//       name: {
+//         type: String,
+//         ref: 'users'
+//     }
+// }
 
 })
 

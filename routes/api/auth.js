@@ -1,14 +1,13 @@
 const express = require('express');
 const router = express.Router();
 
-const bcrypt = require('bcryptjs');
-const config = require('../../config');
-const jwt = require('jsonwebtoken');
+// const bcrypt = require('bcryptjs');
+// const config = require('../../config');
+// const jwt = require('jsonwebtoken');
 const auth = require('../../middleware/auth');
 // User Model
 const User = require('../../models/User');
 
-const { JWT_SECRET } = config;
 
 /**
  * @route   POST api/auth/login
@@ -32,11 +31,10 @@ router.post('/login', async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) throw Error('Invalid credentials');
 
-    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: 3600 });
-    if (!token) throw Error('Couldnt sign the token');
+    // const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: 3600 });
+    // if (!token) throw Error('Couldnt sign the token');
 
     res.status(200).json({
-      token,
       user: {
         id: user._id,
         name: user.name,
@@ -55,34 +53,31 @@ router.post('/login', async (req, res) => {
  * @access  Public
  */
 
-router.post('/register', async (req, res) => {
-  const { _id } = req.body;
-
+router.post('/', async (req, res) => {
+  const auth = req.currentUser;
+if(auth){
+  const uid  = req.body;
   try {
-    const user = await User.findById(_id);
+    const user = await User.findById(uid);
     if (user) throw Error('User already exists');
 
     const newUser = new User({
-      _id
-      // email,
-      // password: hash
+      _id: uid
     });
 
     const savedUser = await newUser.save();
     if (!savedUser) throw Error('Something went wrong saving the user');
 
-    // const token = jwt.sign({ id: savedUser._id }, JWT_SECRET, {
-    //   expiresIn: '1 week'
-    // });
     res.status(200).json({
-      // token,
       user: {
-        id: savedUser.id,
+        _id: savedUser._id,
       }
     });
   } catch (e) {
     res.status(400).json({ msg: e.message });
   }
+}
+return;
 });
 
 /**

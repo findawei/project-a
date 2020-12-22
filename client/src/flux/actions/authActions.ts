@@ -77,33 +77,6 @@ export const logPoints = (user: IUser) => async (dispatch: Function) => {
 export const register = ({ email, password }: IAuthFunction) => async(
   dispatch: Function
 ) => {
-
-  // // Headers
-  // const config = {
-  //   headers: {
-  //     'Content-Type': 'application/json'
-  //   }
-  // };
-
-  // // Request body
-  // const body = JSON.stringify({ name, email, password });
-
-  // axios
-  //   .post('/api/auth/register', body, config)
-  //   .then(res =>
-  //     dispatch({
-  //       type: REGISTER_SUCCESS,
-  //       payload: res.data
-  //     })
-  //   )
-  //   .catch(err => {
-  //     dispatch(
-  //       returnErrors(err.response.data, err.response.status, 'REGISTER_FAIL')
-  //     );
-  //     dispatch({
-  //       type: REGISTER_FAIL
-  //     });
-  //   });
   try {
     firebase
       .auth()
@@ -112,16 +85,37 @@ export const register = ({ email, password }: IAuthFunction) => async(
         firebase.auth().onAuthStateChanged(function(user) {
           user!.sendEmailVerification();
         });
-      })
-
+          })
       .then(dataAfterEmail => {
-        firebase.auth().onAuthStateChanged(function(user) {
+        firebase.auth().onAuthStateChanged(async function(user) {
           if (user) {
             // Sign up successful
             dispatch({
               type: REGISTER_SUCCESS,
               payload:user
             });
+
+            const header = await tokenConfig();
+            const uid = firebase.auth().currentUser!.uid
+              // Request body
+              // const body = JSON.stringify(_id);
+            try{
+              axios
+              .post('/api/auth/', {uid}, header)
+              .then(res=>
+                dispatch({
+                  type: REGISTER_SUCCESS,
+                  payload: res.data
+                }))
+            }
+            catch(err) {
+              dispatch({
+                type: REGISTER_FAIL,
+                payload:
+                    "Something went wrong, we couldn't create your account. Please try again."
+                });
+              };
+
           } else {
             // Signup failed
             dispatch({
@@ -139,14 +133,14 @@ export const register = ({ email, password }: IAuthFunction) => async(
             "Something went wrong, we couldn't create your account. Please try again."
         });
       });
-  } catch (err) {
+  } catch(err) {
     dispatch({
       type: REGISTER_FAIL,
       payload:
         "Something went wrong, we couldn't create your account. Please try again."
     });
   }
-};
+}
 
 // Login User
 export const login = ({ email, password }: IAuthFunction) => async(
@@ -256,7 +250,7 @@ export const tokenConfig = async () => {
   const user = firebase.auth().currentUser;
   const token = user && (await user.getIdToken());
 
-  const config: IConfigHeaders = {
+  const config = {
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,

@@ -34,12 +34,12 @@ async function decodeIDToken(req, res, next) {
   const idToken = req.headers.authorization.split('Bearer ')[1];
 
   try {
-      const decoded = await admin.auth().verifyIdToken(idToken);
-      req['currentUser'] = decoded;
+      const decodedToken = await admin.auth().verifyIdToken(idToken);
+      req['currentUser'] = decodedToken;
     } catch (err) {
       console.log(err);
     }
-  }
+  }  
 next();
 }
 
