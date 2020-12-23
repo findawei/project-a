@@ -2,10 +2,10 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const EventSchema = new Schema({
-  // user: {
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: 'users'
-  // },
+  user: {
+    type: String,
+    ref: 'users'
+  },
   eventId:{
     type: Number,
     required: false

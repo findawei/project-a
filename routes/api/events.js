@@ -17,7 +17,7 @@ router.get('/', async (req, res) => {
   const auth = req.currentUser;
 if(auth){
   try {
-  const events = await Event.find({user: req.user.id}).sort({
+  const events = await Event.find({user: req.currentUser.uid}).sort({
     date: -1,});
   // const events = await Event.find();
   if (!events) throw Error('No items');
