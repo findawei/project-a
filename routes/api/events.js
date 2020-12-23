@@ -17,9 +17,9 @@ router.get('/', async (req, res) => {
   const auth = req.currentUser;
 if(auth){
   try {
-  // const events = await Event.find({user: req.user.id}).sort({
-  //   date: -1,});
-  const events = await Event.find();
+  const events = await Event.find({user: req.user.id}).sort({
+    date: -1,});
+  // const events = await Event.find();
   if (!events) throw Error('No items');
   res.status(200).json(events);
 
@@ -58,7 +58,7 @@ router.post('/', async (req, res) => {
       attendees
     } = req.body
   try{ 
-    // const user = await User.findById(req.user.id).select('-password');
+    // const user = await User.findById(req.user.id);
     const newEvent = new Event({
         title,
         location,

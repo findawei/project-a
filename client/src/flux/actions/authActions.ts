@@ -96,12 +96,12 @@ export const register = ({ email, password }: IAuthFunction) => async(
             });
 
             const header = await tokenConfig();
-            const uid = firebase.auth().currentUser!.uid
+            const _id = firebase.auth().currentUser!.uid
               // Request body
               // const body = JSON.stringify(_id);
             try{
               axios
-              .post('/api/auth/', {uid}, header)
+              .post('/api/auth/', {_id}, header)
               .then(res=>
                 dispatch({
                   type: REGISTER_SUCCESS,

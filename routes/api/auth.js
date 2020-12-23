@@ -56,13 +56,13 @@ router.post('/login', async (req, res) => {
 router.post('/', async (req, res) => {
   const auth = req.currentUser;
 if(auth){
-  const uid  = req.body;
+  const _id  = req.body;
   try {
-    const user = await User.findById(uid);
+    const user = await User.findById(_id);
     if (user) throw Error('User already exists');
 
     const newUser = new User({
-      _id: uid
+      _id: _id
     });
 
     const savedUser = await newUser.save();
