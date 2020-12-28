@@ -6,7 +6,6 @@ import {getEvents} from '../flux/actions/eventActions';
 
 import '@ionic/react/css/text-alignment.css';
 import '@ionic/react/css/typography.css';
-import ItemStore from './ItemStore';
 import PurchaseHistory from './PurchaseHistory';
 
 const Leaderboard = ({ auth, getEvents, event }:ILeaderBoard) => {
@@ -41,7 +40,7 @@ useEffect(() => {
         <IonCard>
             <IonCardHeader>
             <IonCardTitle>
-                Hi {auth!.user.name} 
+                {/* Hi {auth!.user.name}  */}
                 </IonCardTitle>
             </IonCardHeader>
             <IonCardContent>

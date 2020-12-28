@@ -5,14 +5,16 @@ import { tokenConfig } from './authActions';
 import {IItem, IExistingItem} from '../../types/interfaces';
 
 
-export const getItems = () => (
+export const getItems = () => async (
   dispatch: Function, 
   getState: Function
   ) => {
+    const header = await tokenConfig();
+
     dispatch(setItemsLoading());
     axios
         .get('/api/items', 
-        // tokenConfig(getState)
+        header        
         )
         .then(res=>
             dispatch({

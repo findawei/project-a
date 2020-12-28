@@ -16,7 +16,7 @@ const UserSchema = new Schema({
   //   type: String,
   //   required: true
   // },
-  _id: {
+  uid: {
     type: String,
     required: true
   },

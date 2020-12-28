@@ -89,9 +89,6 @@ const Landing = ({ auth }: ILanding) => {
       <IonCard class="ion-card">
         <IonCardContent>
           <LoginModal/>
-          <div 
-          >Forgot password?</div>
-          <RegisterModal />
         </IonCardContent>
       </IonCard>
       </IonCol>

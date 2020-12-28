@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 // Create Schema
 const PurchaseSchema = new Schema({
   user: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: 'users'
   },
   item:{

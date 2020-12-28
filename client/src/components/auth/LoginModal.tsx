@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import {IonItem, IonInput, IonButton, IonToast, IonRoute, IonTitle } from "@ionic/react";
+import {IonItem, IonInput, IonButton, IonToast, IonRoute, IonTitle, IonSpinner, IonText, IonLabel, IonSegment, IonSegmentButton, IonIcon } from "@ionic/react";
 import { connect } from 'react-redux';
-import { login } from '../../flux/actions/authActions';
+import { login, register, resetPassword } from '../../flux/actions/authActions';
 import { ILoginModal, IAuthReduxProps } from '../../types/interfaces';
 import { useForm, Controller, useFieldArray } from "react-hook-form";
+import { star } from 'ionicons/icons';
 
 const LoginModal = ({
   isAuthenticated,
   authMsg,
   login,
+  register,
+  resetPassword
 }: ILoginModal) => {
 
   let initialValues = {
@@ -32,8 +35,10 @@ const LoginModal = ({
   });
 
   const [user, setUser] = useState();
-  // const [msg, setMsg] = useState();
+  const [newUser, setNewUser] = useState(false);
   const [showToast1, setShowToast1] = useState(false);
+  const [pwreset, SetReset] = useState(false);
+
   /**
    *
    * @param _fieldName
@@ -49,15 +54,72 @@ const LoginModal = ({
 
   const handleOnSubmit = (user: any) => {
     // Attempt to login
-    setUser(user)
-    login(user);
-  };
-  
+    if (newUser) {
+          // signup
+          register(user);
+        } else {
+          if (pwreset) {
+            // reset password
+            resetPassword(user.email);
+          } else {
+            // signin
+                login(user);
 
+            ;
+          }
+        }
+      }
 
   return (
-    <div>
+      <div>
           <form onSubmit={handleSubmit(handleOnSubmit)}>
+          {/* <IonButton
+          onClick={() => {
+            setNewUser(!newUser);
+            if (pwreset) SetReset(false);
+          }}
+          className="btn-switch"
+        >
+          {newUser ? "Sign in" : "Create an account"}
+        </IonButton> */}
+
+          {!pwreset && (
+            <div>
+          <IonSegment 
+          // onIonChange={e => console.log('Segment selected', e.detail.value)} 
+          value=
+          {
+            // pwreset ? "Reset password" : 
+          newUser ? "signup" : "signin"}
+          >
+          <IonSegmentButton value="signin"
+          onClick={() => {
+            setNewUser(!newUser);
+            if (pwreset) SetReset(false);
+          }}
+          className="btn-switch"
+        
+          >
+            
+            <IonLabel>Sign in</IonLabel>
+          </IonSegmentButton>
+          <IonSegmentButton value="signup"
+          onClick={() => {
+            setNewUser(!newUser);
+            if (pwreset) SetReset(false);
+          }}
+          className="btn-switch"
+        >
+            <IonLabel>Sign up</IonLabel>
+          </IonSegmentButton>
+        </IonSegment>
+        </div>
+        )}
+        {pwreset && (
+            <IonButton onClick={() => SetReset(false)} className="btn-link" fill="outline" size="small">
+              Back
+            </IonButton>
+          )}
           <IonItem>
               <Controller
                 as={IonInput}
@@ -77,6 +139,8 @@ const LoginModal = ({
             {showError("email")}
             {/* {authMsg && <p className="auth-message">{authMsg}</p>}
           {console.log(authMsg)} */}
+          {!pwreset && (
+            <div>
             <IonItem>
               <Controller
                 as={IonInput}
@@ -94,13 +158,32 @@ const LoginModal = ({
               />
             </IonItem>
             {showError("password")}
-              
+            </div>
+            )}
               <IonButton
               type="submit"
               expand="block"
              >
-                Login
+                {
+            //     loading ? (
+            //   <IonSpinner />
+            // ) : 
+            pwreset ? (
+              "Reset password"
+            ) : newUser ? (
+              "Create account"
+            ) : (
+              "Sign in"
+            )}
               </IonButton>
+              {!newUser && !pwreset && (
+            <IonText onClick={() => SetReset(true)} className="btn-link">
+              Forgot password?
+            </IonText>
+          )}
+             {/* <p>
+          {newUser ? "Already have an account?" : "Don't have an account yet?"}
+        </p> */}
           </form>
     </div>
   );
@@ -111,4 +194,4 @@ const mapStateToProps = (state: IAuthReduxProps) => ({
   authMsg: state.authMsg
 });
 
-export default connect(mapStateToProps, { login })(LoginModal);
+export default connect(mapStateToProps, { login, resetPassword, register })(LoginModal);

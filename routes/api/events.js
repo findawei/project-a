@@ -65,7 +65,7 @@ router.post('/', async (req, res) => {
         dateStart,
         dateEnd,
         // isOrganizer: true,
-        // user: req.user.id,
+        user: req.currentUser.uid,
         // organizer: {email: user.email, name: user.name},
         attendees:  attendees.map(x => ({
           email: x.email,

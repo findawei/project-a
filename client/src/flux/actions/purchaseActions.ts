@@ -5,14 +5,15 @@ import { tokenConfig } from './authActions';
 import {IPurchase} from '../../types/interfaces';
 
 
-export const getPurchases = () => (
+export const getPurchases = () => async (
   dispatch: Function, 
-  getState: Function
   ) => {
+    const header = await tokenConfig();
+
     dispatch(setPurchasesLoading());
     axios
         .get('/api/purchases', 
-        // tokenConfig(getState)
+        header
         )
         .then(res=>
             dispatch({
@@ -27,13 +28,13 @@ export const getPurchases = () => (
         });
 };
 
-export const addPurchases = (purchase: IPurchase) => (
-  dispatch: Function,
-  getState: Function
+export const addPurchases = (purchase: IPurchase) => async (
+  dispatch: Function
   ) => {
+    const header = await tokenConfig();
+try{
     axios
-    .post('/api/purchases', purchase, 
-    // tokenConfig(getState)
+    .post('/api/purchases', purchase, header
     )
     .then(res=>
         dispatch({
@@ -46,6 +47,12 @@ export const addPurchases = (purchase: IPurchase) => (
             type: PURCHASE_ERROR
           });
         });
+      }
+      catch(err){
+        dispatch({
+          type: PURCHASE_ERROR
+        });
+      }
 };
   
   export const setPurchasesLoading = () => {

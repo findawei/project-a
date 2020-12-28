@@ -24,12 +24,28 @@ export const loadUser = () => async(dispatch: Function, getState: Function) => {
     dispatch({ type: USER_LOADING });
     firebase.auth().onAuthStateChanged(async (user) => {
       if(user) {
-        dispatch({
-                type: USER_LOADED,
-                payload: user
-              });
+        // dispatch({
+        //         type: USER_LOADED,
+        //         payload: user
+        //       });
         //Get mongodb userID and set as user
-      }
+        const header = await tokenConfig();
+        try{
+        axios
+        .get('/api/auth/user', header)
+        .then(res =>
+          dispatch({
+            type: USER_LOADED,
+            payload: res.data
+          })
+        )}
+        catch(err) {
+          dispatch((err.response.data, err.response.status));
+          dispatch({
+            type: AUTH_ERROR
+          });
+        };
+          }
     });
 } catch (err) {
   dispatch({
@@ -37,20 +53,7 @@ export const loadUser = () => async(dispatch: Function, getState: Function) => {
         });
   console.log(err);
 }};
-  // axios
-  //   .get('/api/auth/user', tokenConfig(getState))
-  //   .then(res =>
-  //     dispatch({
-  //       type: USER_LOADED,
-  //       payload: res.data
-  //     })
-  //   )
-  //   .catch(err => {
-  //     dispatch(returnErrors(err.response.data, err.response.status));
-  //     dispatch({
-  //       type: AUTH_ERROR
-  //     });
-  //   });
+
 
 
 // Log points to user profile
@@ -96,12 +99,12 @@ export const register = ({ email, password }: IAuthFunction) => async(
             });
 
             const header = await tokenConfig();
-            const _id = firebase.auth().currentUser!.uid
+            // const uid = firebase.auth().currentUser!.uid
               // Request body
               // const body = JSON.stringify(_id);
             try{
               axios
-              .post('/api/auth/', {_id}, header)
+              .post('/api/auth/',{}, header)
               .then(res=>
                 dispatch({
                   type: REGISTER_SUCCESS,

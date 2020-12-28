@@ -36,9 +36,7 @@ router.post('/login', async (req, res) => {
 
     res.status(200).json({
       user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
+        uid: user.uid,
         points: user.points
       }
     });
@@ -56,13 +54,14 @@ router.post('/login', async (req, res) => {
 router.post('/', async (req, res) => {
   const auth = req.currentUser;
 if(auth){
-  const _id  = req.body;
+  const uid  = req.currentUser.uid;
   try {
-    const user = await User.findById(_id);
+    const user = await User.findOne({uid});
     if (user) throw Error('User already exists');
 
     const newUser = new User({
-      _id: _id
+      uid,
+      points: 0
     });
 
     const savedUser = await newUser.save();
@@ -70,14 +69,14 @@ if(auth){
 
     res.status(200).json({
       user: {
-        _id: savedUser._id,
+        uid: savedUser.uid,
+        points: savedUser.points
       }
     });
   } catch (e) {
     res.status(400).json({ msg: e.message });
   }
 }
-return;
 });
 
 /**
@@ -86,14 +85,17 @@ return;
  * @access  Private
  */
 
-router.get('/user', auth, async (req, res) => {
+router.get('/user', async (req, res) => {
+  const auth = req.currentUser;
+if(auth){
   try {
-    const user = await User.findById(req.user.id).select('-password');
+    const user = await User.findOne({uid: req.currentUser.uid})
     if (!user) throw Error('User Does not exist');
     res.json(user);
   } catch (e) {
     res.status(400).json({ msg: e.message });
   }
+}
 });
 
 /**
@@ -102,9 +104,11 @@ router.get('/user', auth, async (req, res) => {
  * @access  Public
  */
 
-router.put('/points', auth, async (req, res) => {
+router.put('/points', async (req, res) => {
+  const auth = req.currentUser;
+if(auth){
   try {
-    const user = await User.findOneAndUpdate({_id:req.user.id},
+    const user = await User.findOneAndUpdate({uid:req.currentUser.uid},
     {points: req.body.points}, {new:true}
     )
       if (!user) throw Error('Could not add points.');
@@ -112,6 +116,7 @@ router.put('/points', auth, async (req, res) => {
       } catch (e) {
         res.status(400).json({ msg: e.message });
       }
+}
 });
   
 

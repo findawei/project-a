@@ -41,6 +41,8 @@ export interface IAuthForm {
 
 export interface ILoginModal extends IAuthForm {
   login(user: IUser): void;
+  resetPassword(email:string): void;
+  register(user: IUser): void;
   authMsg: string;
 
 }
