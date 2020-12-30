@@ -44,7 +44,7 @@ export interface ILoginModal extends IAuthForm {
   resetPassword(email:string): void;
   register(user: IUser): void;
   authMsg: string;
-
+  loginMicrosoft(): void;
 }
 
 export interface IResetPassword extends IAuthForm {

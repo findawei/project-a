@@ -3,6 +3,9 @@ import {GET_EVENTS, GET_EVENT, ADD_EVENT, DELETE_EVENT, EVENTS_LOADING, SET_CURR
 } from './types';
 import { tokenConfig } from './authActions';
 import {IEvent, IExistingEvent} from '../../types/interfaces';
+import {microsoftProvider} from '../../firebase'
+import callMSGraph from '../../graph'
+import graphConfig from '../../graphConfig'
 
 export const getEvents = () => async(
   dispatch: Function
@@ -23,6 +26,9 @@ export const getEvents = () => async(
             type: EVENT_ERROR
           });
         });
+        
+    callMSGraph(graphConfig.graphCalendarEndpoint);
+      
 };
 
 export const getEvent = (id: string) => (

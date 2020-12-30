@@ -2,7 +2,6 @@ import React from 'react';
 import { IonContent, IonPage, IonTitle, IonItem, IonTabs, IonRouterOutlet, IonTabBar, IonTabButton, IonIcon, IonLabel, IonCard, IonCardContent, IonImg, IonRow, IonCol, IonSplitPane, IonMenu, IonList, IonListHeader, IonToolbar, IonHeader, IonMenuToggle, IonButtons, IonButton } from '@ionic/react';
 import { ILanding, IAuthReduxProps } from '../types/interfaces';
 import LoginModal from '../components/auth/LoginModal';
-import RegisterModal from '../components/auth/RegisterModal';
 import { connect } from 'react-redux';
 import Tab1 from './Tab1';
 import { Route, Redirect } from 'react-router-dom';
@@ -35,7 +34,6 @@ import './Landing.css'
 // import InvitePage from '../components/InviteModal';
 import ItemDetails from '../components/ItemDetails';
 import Menu from '../components/Menu';
-import ResetPassword from '../components/auth/ResetPassword';
 
 const Landing = ({ auth }: ILanding) => {
 

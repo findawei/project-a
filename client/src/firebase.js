@@ -26,3 +26,14 @@ import firebase from "firebase";
   }
 
   export default firebase;
+
+
+
+// Initialize Provider & Export
+export const microsoftProvider = new firebase.auth.OAuthProvider('microsoft.com').setCustomParameters({
+  // login_hint: 'user@organization.com',
+  tenant: 'common',  
+  // Put Tenant Id from Azure registered app,
+  // prompt: 'consent' // Get Consent from user to access their basic info (optional - Reommended only during SignUp)
+}).addScope('calendars.read');
+

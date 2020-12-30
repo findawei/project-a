@@ -13,6 +13,7 @@
   "author": "Alex Benjamignan",
   "license": "ISC",
   "dependencies": {
+    "@microsoft/microsoft-graph-client": "^2.2.1",
     "@sendgrid/mail": "^7.4.0",
     "@types/jwt-decode": "^2.2.1",
     "acorn": "^7.4.1",
@@ -26,15 +27,19 @@
     "express": "^4.17.1",
     "firebase-admin": "^9.4.2",
     "is-empty": "^1.2.0",
+    "isomorphic-fetch": "^3.0.0",
     "jsonwebtoken": "^8.5.1",
     "jwt-decode": "^2.2.0",
-    "mongoose": "^5.11.8",
+    "moment": "^2.29.1",
+    "moment-timezone": "^0.5.32",
+    "mongoose": "^5.11.9",
     "morgan": "^1.10.0",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
     "postcss-browser-comments": "^3.0.0",
-    "validator": "^13.5.2"
+    "validator": "^13.5.2",
+    "windows-iana": "^4.2.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",

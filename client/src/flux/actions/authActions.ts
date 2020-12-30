@@ -13,7 +13,7 @@ import {
   RESET_ERROR
 } from './types';
 import { IAuthFunction, IConfigHeaders, IUser } from '../../types/interfaces';
-import firebase from '../../firebase';
+import firebase, { microsoftProvider } from '../../firebase';
 import { config } from 'process';
 
 
@@ -24,27 +24,27 @@ export const loadUser = () => async(dispatch: Function, getState: Function) => {
     dispatch({ type: USER_LOADING });
     firebase.auth().onAuthStateChanged(async (user) => {
       if(user) {
-        // dispatch({
-        //         type: USER_LOADED,
-        //         payload: user
-        //       });
+        dispatch({
+                type: USER_LOADED,
+                payload: user
+              });
         //Get mongodb userID and set as user
-        const header = await tokenConfig();
-        try{
-        axios
-        .get('/api/auth/user', header)
-        .then(res =>
-          dispatch({
-            type: USER_LOADED,
-            payload: res.data
-          })
-        )}
-        catch(err) {
-          dispatch((err.response.data, err.response.status));
-          dispatch({
-            type: AUTH_ERROR
-          });
-        };
+        // const header = await tokenConfig();
+        // try{
+        // axios
+        // .get('/api/auth/user', header)
+        // .then(res =>
+        //   dispatch({
+        //     type: USER_LOADED,
+        //     payload: res.data
+        //   })
+        // )}
+        // catch(err) {
+        //   dispatch((err.response.data, err.response.status));
+        //   dispatch({
+        //     type: AUTH_ERROR
+        //   });
+        // };
           }
     });
 } catch (err) {
@@ -210,6 +210,61 @@ export const login = ({ email, password }: IAuthFunction) => async(
   //       type: LOGIN_FAIL
   //     });
   //   });
+};
+
+// Login Microsoft User
+export const loginMicrosoft = () => async(
+  dispatch: Function
+) => {
+  try{
+    firebase.auth().signInWithPopup(microsoftProvider)
+    .then(async data => {
+      if (data.user!.emailVerified) {
+        console.log("IF", data.user!.emailVerified);
+        dispatch({ type: LOGIN_SUCCESS });
+
+        const header = await tokenConfig();
+        // const uid = firebase.auth().currentUser!.uid
+          // Request body
+          // const body = JSON.stringify(_id);
+        try{
+          axios
+          .post('/api/auth/',{}, header)
+          .then(res=>
+            dispatch({
+              type: REGISTER_SUCCESS,
+              payload: res.data
+            }))
+        }
+        catch(err) {
+          dispatch({
+            type: REGISTER_FAIL,
+            payload:
+                "Something went wrong, we couldn't create your account. Please try again."
+            });
+          };
+
+
+      } else {
+        console.log("ELSE", data.user!.emailVerified);
+        dispatch({
+          type: REGISTER_FAIL,
+          payload: "You haven't verified your e-mail address."
+        });
+      }
+    })
+.catch(err =>{
+  dispatch({
+    type: LOGIN_FAIL,
+    payload: "Invalid login credentials"
+  })
+})
+ } catch(err) {
+    dispatch({
+    type: LOGIN_FAIL,
+    payload: "Invalid login credentials"
+    });
+  }
 };
 
 export const resetPassword = (email: string) => async (dispatch: Function) => {

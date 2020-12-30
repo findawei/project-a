@@ -1,17 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import {IonItem, IonInput, IonButton, IonToast, IonRoute, IonTitle, IonSpinner, IonText, IonLabel, IonSegment, IonSegmentButton, IonIcon } from "@ionic/react";
+import React, { useState } from 'react';
+import {IonItem, IonInput, IonButton, IonText, IonLabel, IonSegment, IonSegmentButton } from "@ionic/react";
 import { connect } from 'react-redux';
-import { login, register, resetPassword } from '../../flux/actions/authActions';
+import { login, loginMicrosoft, register, resetPassword } from '../../flux/actions/authActions';
 import { ILoginModal, IAuthReduxProps } from '../../types/interfaces';
-import { useForm, Controller, useFieldArray } from "react-hook-form";
-import { star } from 'ionicons/icons';
+import { useForm, Controller } from "react-hook-form";
+import MsBtn from './ms.svg'
+
 
 const LoginModal = ({
   isAuthenticated,
   authMsg,
   login,
   register,
-  resetPassword
+  resetPassword,
+  loginMicrosoft
 }: ILoginModal) => {
 
   let initialValues = {
@@ -115,6 +117,13 @@ const LoginModal = ({
         </IonSegment>
         </div>
         )}
+
+        {/* MS signin button */}
+        <IonButton expand="full" fill="clear" onClick={()=>loginMicrosoft()}>
+          <img src={MsBtn} alt="Ms Auth Btn"/>
+        </IonButton> 
+
+
         {pwreset && (
             <IonButton onClick={() => SetReset(false)} className="btn-link" fill="outline" size="small">
               Back
@@ -194,4 +203,4 @@ const mapStateToProps = (state: IAuthReduxProps) => ({
   authMsg: state.authMsg
 });
 
-export default connect(mapStateToProps, { login, resetPassword, register })(LoginModal);
+export default connect(mapStateToProps, { login, resetPassword, register, loginMicrosoft })(LoginModal);
