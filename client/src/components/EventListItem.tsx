@@ -79,8 +79,8 @@ const EventListItem = ({ event, deleteEvent, setCurrent }: IEventListItem) => {
                     onClick={() => handleDelete(event._id)}
                     />
               </IonItem>
-        </div>      
-  );
+        </div> 
+  )     
 };
 
 

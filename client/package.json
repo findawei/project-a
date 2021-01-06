@@ -13,11 +13,11 @@
     "@testing-library/react": "^9.4.0",
     "@testing-library/user-event": "^8.0.3",
     "@types/jest": "^24.0.25",
-    "@types/node": "^14.14.16",
+    "@types/node": "^14.14.19",
     "@types/react": "^16.14.2",
     "@types/react-dom": "^16.9.10",
-    "@types/react-router": "^5.1.8",
-    "@types/react-router-dom": "^5.1.6",
+    "@types/react-router": "^5.1.9",
+    "@types/react-router-dom": "^5.1.7",
     "axios": "^0.19.2",
     "cordova-plugin-calendar": "^5.1.5",
     "cordova-plugin-contacts": "^3.0.1",
@@ -73,7 +73,7 @@
   },
   "devDependencies": {
     "@capacitor/cli": "^2.4.5",
-    "@types/react-redux": "^7.1.14"
+    "@types/react-redux": "^7.1.15"
   },
   "description": "An Ionic project"
 }

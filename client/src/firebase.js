@@ -1,7 +1,6 @@
 // Firebase App (the core Firebase SDK) is always required and
 // must be listed before other Firebase SDKs
 import firebase from "firebase";
-
 // Add the Firebase services that you want to use
 // We only want to use Firebase Auth here
 
@@ -24,16 +23,17 @@ import firebase from "firebase";
       console.error('Firebase initialization error', err.stack);
     }
   }
-
   export default firebase;
 
 
-
 // Initialize Provider & Export
-export const microsoftProvider = new firebase.auth.OAuthProvider('microsoft.com').setCustomParameters({
-  // login_hint: 'user@organization.com',
-  tenant: 'common',  
-  // Put Tenant Id from Azure registered app,
-  // prompt: 'consent' // Get Consent from user to access their basic info (optional - Reommended only during SignUp)
-}).addScope('calendars.read');
+export const microsoftProvider = new firebase.auth.OAuthProvider('microsoft.com')
+// .setCustomParameters({
+//   // login_hint: 'user@organization.com',
+//   tenant: 'common',  
+//   // Put Tenant Id from Azure registered app,
+//   // prompt: 'consent' // Get Consent from user to access their basic info (optional - Reommended only during SignUp)
+// })
+.addScope('calendars.read');
 
+firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);

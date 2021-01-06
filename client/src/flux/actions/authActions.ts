@@ -219,45 +219,55 @@ export const loginMicrosoft = () => async(
   try{
     firebase.auth().signInWithPopup(microsoftProvider)
     .then(async data => {
-      if (data.user!.emailVerified) {
+      // if (data.user!.emailVerified) {
         console.log("IF", data.user!.emailVerified);
-        dispatch({ type: LOGIN_SUCCESS });
+        dispatch({ type: LOGIN_SUCCESS, payload: data });
 
-        const header = await tokenConfig();
+        var accessToken = (<any>data).credential!.accessToken!;
+
+        dispatch({
+          type: LOGIN_SUCCESS,
+          payload: data
+        })
+        
+        // const header = await tokenConfig();
+        
         // const uid = firebase.auth().currentUser!.uid
           // Request body
           // const body = JSON.stringify(_id);
-        try{
-          axios
-          .post('/api/auth/',{}, header)
-          .then(res=>
-            dispatch({
-              type: REGISTER_SUCCESS,
-              payload: res.data
-            }))
-        }
-        catch(err) {
-          dispatch({
-            type: REGISTER_FAIL,
-            payload:
-                "Something went wrong, we couldn't create your account. Please try again."
-            });
-          };
+        // try{
+        //   axios
+        //   .post('/api/auth/',{}, header)
+        //   .then(res=>
+        //     dispatch({
+        //       type: REGISTER_SUCCESS,
+        //       payload: res.data
+        //     }))
+        // }
+        // catch(err) {
+        //   dispatch({
+        //     type: REGISTER_FAIL,
+        //     payload:
+        //         "Something went wrong, we couldn't create your account. Please try again."
+        //     });
+        //   };
 
-
-      } else {
-        console.log("ELSE", data.user!.emailVerified);
-        dispatch({
-          type: REGISTER_FAIL,
-          payload: "You haven't verified your e-mail address."
-        });
-      }
+      // } else {
+      //   console.log("ELSE", data.user!.emailVerified);
+      //   dispatch({
+      //     type: REGISTER_FAIL,
+      //     payload: "You haven't verified your e-mail address."
+      //   });
+      // }
     })
-.catch(err =>{
-  dispatch({
-    type: LOGIN_FAIL,
-    payload: "Invalid login credentials"
-  })
+.catch(error =>{
+   // Handle Errors here.
+   var errorCode = error.code;
+   var errorMessage = error.message;
+   // The email of the user's account used.
+   var email = error.email;
+   // The firebase.auth.AuthCredential type that was used.
+   var credential = error.credential;
 })
  } catch(err) {
     dispatch({
@@ -315,5 +325,18 @@ export const tokenConfig = async () => {
     },
   };
   return config;
+};
+
+// Setup config/headers and token
+export const accessToken = async () => {
+  firebase.auth().getRedirectResult()
+    .then((result) => {
+      const credential = result.credential as firebase.auth.OAuthCredential;
+      const token = credential.accessToken;
+      return token;
+    })
+    .catch((error) => {
+     console.log(error)
+    })
 };
 

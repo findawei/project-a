@@ -6,18 +6,23 @@ import { IEventReduxProps, ICalendar } from '../types/interfaces';
 import EventListItem from './EventListItem';
 import {isFuture, isPast} from "date-fns";
 
-
 const Calendar = ({ getEvents, event }: ICalendar) => {
 
   useEffect(() => { 
     getEvents(); 
   }, [getEvents]);
- 
+//  useEffect(()=>{
+//   seeProfile();
+//  },[seeProfile])
+
+
   const { events } = event;
+
 
   return (
     <IonContent>
-      <IonList>
+ 
+      {/* <IonList>
         <IonListHeader lines="full">
           <IonLabel color="primary">
             <h2>Upcoming</h2>
@@ -40,17 +45,17 @@ const Calendar = ({ getEvents, event }: ICalendar) => {
           key={event._id}/>
           )
           }
-      </IonList>
+      </IonList> */}
       {/* <IonLabel>
        <h1>Meetings Attended</h1> 
       </IonLabel> */}
-      {/* <IonList>
-        {events.filter().map(event => <EventListItem 
+      <IonList>
+        {events.map(event => <EventListItem 
           event={event} 
           key={event._id}
           />
           )}
-      </IonList> */}
+      </IonList>
     </IonContent>
   );
 };

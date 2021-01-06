@@ -4,8 +4,7 @@ import {GET_EVENTS, GET_EVENT, ADD_EVENT, DELETE_EVENT, EVENTS_LOADING, SET_CURR
 import { tokenConfig } from './authActions';
 import {IEvent, IExistingEvent} from '../../types/interfaces';
 import {microsoftProvider} from '../../firebase'
-import callMSGraph from '../../graph'
-import graphConfig from '../../graphConfig'
+import {accessToken} from './authActions'
 
 export const getEvents = () => async(
   dispatch: Function
@@ -26,9 +25,22 @@ export const getEvents = () => async(
             type: EVENT_ERROR
           });
         });
-        
-    callMSGraph(graphConfig.graphCalendarEndpoint);
+    // dispatch(setEventsLoading());
+    // // console.log(accessToken)
+    // try {
+    //    var data = callMSGraph(graphConfig.graphCalendarEndpoint, accessToken)
+    //     dispatch({
+    //       type: GET_EVENTS,
+    //       payload: data      
+    //     });
+    
       
+    // } catch (err) {
+    //   dispatch({
+    //     type: EVENT_ERROR,
+    //     dispatch: err.message
+    //   });
+    // }      
 };
 
 export const getEvent = (id: string) => (
