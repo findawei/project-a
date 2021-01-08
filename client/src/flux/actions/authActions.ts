@@ -212,7 +212,8 @@ export const login = ({ email, password }: IAuthFunction) => async(
   //   });
 };
 
-// Login Microsoft User
+export var accessToken = '';
+// // Login Microsoft User
 export const loginMicrosoft = () => async(
   dispatch: Function
 ) => {
@@ -223,8 +224,8 @@ export const loginMicrosoft = () => async(
         console.log("IF", data.user!.emailVerified);
         dispatch({ type: LOGIN_SUCCESS, payload: data });
 
-        var accessToken = (<any>data).credential!.accessToken!;
-
+        accessToken = (<any>data).credential!.accessToken!;
+        
         dispatch({
           type: LOGIN_SUCCESS,
           payload: data
@@ -327,16 +328,16 @@ export const tokenConfig = async () => {
   return config;
 };
 
-// Setup config/headers and token
-export const accessToken = async () => {
-  firebase.auth().getRedirectResult()
-    .then((result) => {
-      const credential = result.credential as firebase.auth.OAuthCredential;
-      const token = credential.accessToken;
-      return token;
-    })
-    .catch((error) => {
-     console.log(error)
-    })
-};
+// // Setup config/headers and token
+// export const accessToken = async () => {
+//   firebase.auth().getRedirectResult()
+//     .then((result) => {
+//       const credential = result.credential as firebase.auth.OAuthCredential;
+//       const token = credential.accessToken;
+      
+//     })
+//     .catch((error) => {
+//      return console.log(error)
+//     })
+// };
 

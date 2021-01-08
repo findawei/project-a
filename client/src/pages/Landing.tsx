@@ -51,25 +51,6 @@ const Landing = ({ auth }: ILanding) => {
             {/* <Route path="/event/log/:_id" component={EventLog}/> */}
             <Route path="/item/:_id" component={ItemDetails}/>
         </IonRouterOutlet>
-
-        {/* <IonTabBar slot="bottom">
-          <IonTabButton tab="tab1" href="/tab1">
-          <IonIcon icon={calendar}></IonIcon>
-            <IonLabel>Events</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab="tab2" href="/tab2">
-            <IonIcon icon={statsChartOutline} />
-            <IonLabel>My Stats</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab="tab4" href="/tab4">
-            <IonIcon icon={star} />
-            <IonLabel>Redeem</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab="tab3" href="/tab3">
-            <IonIcon icon={cog} />
-            <IonLabel>Settings</IonLabel>
-          </IonTabButton>
-        </IonTabBar> */}
       </IonSplitPane>
     </IonReactRouter>
     

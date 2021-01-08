@@ -1,6 +1,9 @@
 // Firebase App (the core Firebase SDK) is always required and
 // must be listed before other Firebase SDKs
 import firebase from "firebase";
+import {callMSGraph} from './graph'
+import graphConfig from './graphConfig'
+import {accessToken} from './flux/actions/authActions'
 // Add the Firebase services that you want to use
 // We only want to use Firebase Auth here
 
@@ -34,6 +37,7 @@ export const microsoftProvider = new firebase.auth.OAuthProvider('microsoft.com'
 //   // Put Tenant Id from Azure registered app,
 //   // prompt: 'consent' // Get Consent from user to access their basic info (optional - Reommended only during SignUp)
 // })
-.addScope('calendars.read');
+.addScope('calendars.read')
+.addScope('mail.read');
 
 firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);

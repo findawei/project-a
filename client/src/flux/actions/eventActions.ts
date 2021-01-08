@@ -4,7 +4,7 @@ import {GET_EVENTS, GET_EVENT, ADD_EVENT, DELETE_EVENT, EVENTS_LOADING, SET_CURR
 import { tokenConfig } from './authActions';
 import {IEvent, IExistingEvent} from '../../types/interfaces';
 import {microsoftProvider} from '../../firebase'
-import {accessToken} from './authActions'
+// import {accessToken} from './authActions'
 
 export const getEvents = () => async(
   dispatch: Function

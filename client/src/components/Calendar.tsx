@@ -1,22 +1,30 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IonContent, IonItem, IonLabel, IonList, IonListHeader } from '@ionic/react';
 import {connect} from 'react-redux';
 import {getEvents} from '../flux/actions/eventActions';
 import { IEventReduxProps, ICalendar } from '../types/interfaces';
 import EventListItem from './EventListItem';
-import {isFuture, isPast} from "date-fns";
+import { callMsGraph, ProfileData } from '../graph';
+import { accessToken } from '../flux/actions/authActions';
 
 const Calendar = ({ getEvents, event }: ICalendar) => {
 
   useEffect(() => { 
-    getEvents(); 
+    getEvents();
   }, [getEvents]);
-//  useEffect(()=>{
-//   seeProfile();
-//  },[seeProfile])
+  
+ useEffect(()=>{
+   RequestProfileData();
+ },[])
 
+const [graphData, setGraphData] = useState(null);
 
-  const { events } = event;
+function RequestProfileData() {
+      callMsGraph(accessToken)
+        .then(e => setGraphData(e));
+}
+
+const { events } = event;
 
 
   return (
@@ -49,6 +57,12 @@ const Calendar = ({ getEvents, event }: ICalendar) => {
       {/* <IonLabel>
        <h1>Meetings Attended</h1> 
       </IonLabel> */}
+      {graphData ? 
+                <ProfileData graphData={graphData} />
+                :
+      <p>Didn't connect to Graph</p>}
+
+
       <IonList>
         {events.map(event => <EventListItem 
           event={event} 

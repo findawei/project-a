@@ -200,6 +200,7 @@ export interface IPurchaseListItem {
 export interface ICalendar {
   event: {events: IExistingEvent[];};
   getEvents(): void;
+  // readCalendar(): void;
 }
 
 export interface IEventReduxProps{
