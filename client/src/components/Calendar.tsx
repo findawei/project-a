@@ -4,8 +4,13 @@ import {connect} from 'react-redux';
 import {getEvents} from '../flux/actions/eventActions';
 import { IEventReduxProps, ICalendar } from '../types/interfaces';
 import EventListItem from './EventListItem';
-import { callMsGraph, ProfileData } from '../graph';
 import { accessToken } from '../flux/actions/authActions';
+import { graphConfig } from '../graphConfig';
+import { getUserWeekCalendar } from '../GraphService';
+import moment, { Moment } from 'moment';
+// import { Event } from '@microsoft/microsoft-graph-types';
+
+
 
 const Calendar = ({ getEvents, event }: ICalendar) => {
 
@@ -13,60 +18,34 @@ const Calendar = ({ getEvents, event }: ICalendar) => {
     getEvents();
   }, [getEvents]);
   
- useEffect(()=>{
-   RequestProfileData();
- },[])
+//  useEffect(()=>{
+//    RequestProfileData();
+//  },[])
 
-const [graphData, setGraphData] = useState(null);
-
-function RequestProfileData() {
-      callMsGraph(accessToken)
-        .then(e => setGraphData(e));
-}
+  
+// function RequestProfileData() {
+//       callMsGraph(graphConfig.graphCalendarEndpoint, accessToken, range)
+//         .then(e => setGraphData(e));    
+// }
 
 const { events } = event;
-
 
   return (
     <IonContent>
  
-      {/* <IonList>
-        <IonListHeader lines="full">
-          <IonLabel color="primary">
-            <h2>Upcoming</h2>
-            </IonLabel>
-        </IonListHeader>
-          {events.filter(opt => isFuture(new Date(opt.dateStart))).map(event => <EventListItem 
-          event={event} 
-          key={event._id}/>
-          )
-          }
-      </IonList>
-      <IonList>
-        <IonListHeader lines="full">
-          <IonLabel>
-            <h2>Past</h2>
-            </IonLabel>
-        </IonListHeader>  
-          {events.filter(opt => isPast(new Date(opt.dateStart))).map(event => <EventListItem 
-          event={event} 
-          key={event._id}/>
-          )
-          }
-      </IonList> */}
       {/* <IonLabel>
        <h1>Meetings Attended</h1> 
       </IonLabel> */}
-      {graphData ? 
-                <ProfileData graphData={graphData} />
+      
+      {/* {graphData ? 
+                <ReadCalendar graphData={graphData} />
                 :
-      <p>Didn't connect to Graph</p>}
-
+      <p>Didn't connect to Graph</p>} */}
 
       <IonList>
         {events.map(event => <EventListItem 
           event={event} 
-          key={event._id}
+          key={event.iCalUId}
           />
           )}
       </IonList>

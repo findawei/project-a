@@ -1,46 +1,53 @@
 import axios from 'axios';
 import {GET_EVENTS, GET_EVENT, ADD_EVENT, DELETE_EVENT, EVENTS_LOADING, SET_CURRENT, CLEAR_CURRENT, UPDATE_EVENT, LOG_ARRIVAL, EVENT_ERROR, GET_INVITES 
 } from './types';
-import { tokenConfig } from './authActions';
+import { accessToken, tokenConfig } from './authActions';
 import {IEvent, IExistingEvent} from '../../types/interfaces';
 import {microsoftProvider} from '../../firebase'
+import { getUserWeekCalendar } from '../../GraphService';
+import moment from 'moment';
 // import {accessToken} from './authActions'
 
 export const getEvents = () => async(
   dispatch: Function
   ) => {
-    const header = await tokenConfig();
+    // const header = await tokenConfig();
 
-    dispatch(setEventsLoading());
-    axios
-        .get('/api/events', header )
-        .then(res=>
-            dispatch({
-                type: GET_EVENTS,
-                payload: res.data
-            })
-        )
-        .catch(err => {
-          dispatch({
-            type: EVENT_ERROR
-          });
-        });
     // dispatch(setEventsLoading());
-    // // console.log(accessToken)
-    // try {
-    //    var data = callMSGraph(graphConfig.graphCalendarEndpoint, accessToken)
-    //     dispatch({
-    //       type: GET_EVENTS,
-    //       payload: data      
+    // axios
+    //     .get('/api/events', header )
+    //     .then(res=>
+    //         dispatch({
+    //             type: GET_EVENTS,
+    //             payload: res.data
+    //         })
+    //     )
+    //     .catch(err => {
+    //       dispatch({
+    //         type: EVENT_ERROR
+    //       });
     //     });
+    var startOfWeek = moment().startOf('week').utc()
+    
+    dispatch(setEventsLoading());
+    // // console.log(accessToken)
+    try {
+      getUserWeekCalendar(accessToken, startOfWeek)
+      .then(async data =>{
+        dispatch({
+          type: GET_EVENTS,
+          payload: data      
+        });
+      })
+        
     
       
-    // } catch (err) {
-    //   dispatch({
-    //     type: EVENT_ERROR,
-    //     dispatch: err.message
-    //   });
-    // }      
+    } catch (err) {
+      dispatch({
+        type: EVENT_ERROR,
+        dispatch: err.message
+      });
+    }      
 };
 
 export const getEvent = (id: string) => (

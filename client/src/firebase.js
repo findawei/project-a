@@ -1,7 +1,7 @@
 // Firebase App (the core Firebase SDK) is always required and
 // must be listed before other Firebase SDKs
 import firebase from "firebase";
-import {callMSGraph} from './graph'
+import {callMSGraph} from './GraphService'
 import graphConfig from './graphConfig'
 import {accessToken} from './flux/actions/authActions'
 // Add the Firebase services that you want to use
