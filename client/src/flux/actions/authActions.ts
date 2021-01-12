@@ -16,7 +16,7 @@ import { IAuthFunction, IConfigHeaders, IUser } from '../../types/interfaces';
 import firebase, { microsoftProvider } from '../../firebase';
 import { config } from 'process';
 
-
+export var accessToken = '';
 // Check token & load user
 export const loadUser = () => async(dispatch: Function, getState: Function) => {
   // User loading
@@ -28,6 +28,10 @@ export const loadUser = () => async(dispatch: Function, getState: Function) => {
                 type: USER_LOADED,
                 payload: user
               });
+        
+        // let accessToken = user
+        // console.log(accessToken)
+        
         //Get mongodb userID and set as user
         // const header = await tokenConfig();
         // try{
@@ -46,6 +50,9 @@ export const loadUser = () => async(dispatch: Function, getState: Function) => {
         //   });
         // };
           }
+      else {
+        accessToken = 'five'
+      }
     });
 } catch (err) {
   dispatch({
@@ -212,7 +219,6 @@ export const login = ({ email, password }: IAuthFunction) => async(
   //   });
 };
 
-export var accessToken = '';
 // // Login Microsoft User
 export const loginMicrosoft = () => async(
   dispatch: Function
@@ -222,14 +228,13 @@ export const loginMicrosoft = () => async(
     .then(async data => {
       // if (data.user!.emailVerified) {
         console.log("IF", data.user!.emailVerified);
-        dispatch({ type: LOGIN_SUCCESS, payload: data });
+        dispatch({ 
+          type: LOGIN_SUCCESS, 
+          payload: data 
+        });
 
         accessToken = (<any>data).credential!.accessToken!;
         
-        dispatch({
-          type: LOGIN_SUCCESS,
-          payload: data
-        })
         
         // const header = await tokenConfig();
         

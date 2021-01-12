@@ -15,7 +15,10 @@ import moment, { Moment } from 'moment';
 const Calendar = ({ getEvents, event }: ICalendar) => {
 
   useEffect(() => { 
-    getEvents();
+    
+    if(accessToken){
+      getEvents()
+    }
   }, [getEvents]);
   
 //  useEffect(()=>{
@@ -32,22 +35,16 @@ const { events } = event;
 
   return (
     <IonContent>
- 
-      {/* <IonLabel>
-       <h1>Meetings Attended</h1> 
-      </IonLabel> */}
-      
-      {/* {graphData ? 
-                <ReadCalendar graphData={graphData} />
-                :
-      <p>Didn't connect to Graph</p>} */}
-
       <IonList>
-        {events.map(event => <EventListItem 
+        <div>
+        {accessToken ? events.map(event => <EventListItem 
           event={event} 
           key={event.iCalUId}
           />
-          )}
+          ) :
+          <p>Didn't connect to Graph</p>
+          }
+          </div>
       </IonList>
     </IonContent>
   );

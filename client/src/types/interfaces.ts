@@ -84,6 +84,8 @@ export interface ILanding {
 
 // EVENTS
 export interface IExistingEvent {
+  end: any;
+  start: any;
   iCalUId: string | number | null | undefined;
   subject: string;
   _id: string;
