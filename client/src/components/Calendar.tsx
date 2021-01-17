@@ -16,7 +16,7 @@ const Calendar = ({ getEvents, event }: ICalendar) => {
 
   useEffect(() => { 
     
-    if(accessToken){
+    if(accessToken && accessToken.length > 0){
       getEvents()
     }
   }, [getEvents]);

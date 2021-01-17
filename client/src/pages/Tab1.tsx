@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { IonHeader, IonPage, IonTitle, IonModal, IonToolbar, IonIcon, IonContent, IonButtons, IonButton, IonBadge } from '@ionic/react';
+import { IonHeader, IonPage, IonTitle, IonModal, IonToolbar, IonIcon, IonContent, IonButtons, IonButton, IonBadge, IonMenuButton } from '@ionic/react';
 import './Tab1.css';
 import Calendar from '../components/Calendar';
 // import EventAdd from '../components/EventAdd';
@@ -25,16 +25,10 @@ const Tab1 = ({ onDismissModal}: IInviteModal) => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-        <IonButtons slot="start">
-          <IonButton onClick={() => setShowEventModal(true)}>
-            <IonIcon slot="icon-only" icon={add}  />
-          </IonButton>
-        </IonButtons>            
-          <IonTitle>
-          <div className="ion-text-center">
-          Events
-          </div>
-          </IonTitle> 
+          <IonButtons slot="start">
+            <IonMenuButton></IonMenuButton>
+          </IonButtons>
+          <IonTitle>Events</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent>

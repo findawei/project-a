@@ -27,6 +27,14 @@ const UserSchema = new Schema({
   points:{
     type: Number,
     required: false
+  },
+  role:{
+    type: String,
+    required: true
+  },
+  organization:{
+    type: String,
+    ref: 'organizations'
   }
 });
 

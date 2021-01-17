@@ -12,6 +12,7 @@ const events = require('./routes/api/events');
 const users = require("./routes/api/users");
 const authRoutes = require("./routes/api/auth");
 const purchases = require('./routes/api/purchases')
+const organizations = require('./routes/api/organizations')
 
 const { MONGO_URI, MONGO_DB_NAME } = config;
 
@@ -31,7 +32,6 @@ app.use(morgan('dev'));
 //     })
 //   );
 app.use(decodeIDToken);
-
 
 //connect to db
 const db = `${MONGO_URI}/${MONGO_DB_NAME}`;
@@ -53,6 +53,8 @@ app.use('/api/events', events);
 app.use('/api/auth', authRoutes);
 app.use('/api/items', items);
 app.use('/api/purchases', purchases);
+app.use('/api/organizations', organizations);
+
 
 
 const { PORT } = config;

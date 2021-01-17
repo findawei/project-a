@@ -7,6 +7,7 @@ const Event = require('../../models/Event');
 var sender = require('../../email/mailer');
 const config =require( '../../config');
 const bodyParser = require('body-parser');
+const token = require('../../server')
 
 const { VERIFICATION_TOKEN } = config;
 
@@ -135,43 +136,49 @@ router.delete('/:id', async (req, res) => {
 });
 
 
+//Zoom API
 
-// router.post('/', bodyParser.raw({ type: 'application/json' }), (req, res) => {
 
-//   let event;
+//Arrival Time
+// @route   POST api/events/
+// @desc    POST event
+// @access  Private
 
-//   try {
-//       event = JSON.parse(req.body);
-//   } catch (err) {
-//       res.status(400).send(`Webhook Error: ${err.message}`);
-//   }
-//   // Check to see if you received the event or not.
-//   console.log(event)
-//   if (req.headers.authorization === VERIFICATION_TOKEN) {
-//       res.status(200);
-//       console.log("Meeting Started Webhook Recieved.") 
+router.post('/', async (req, res) => {
+  const auth = req.currentUser;
 
-//               // const msg = {
-//               //     to: 'hayhoky@gmail.com',
-//               //     from: 'info@tardyapp.com',
-//               //     subject: 'We are sorry that we missed you.',
-//               //     text: 'Please, let us know if the timing of these webinars do not work for you. We hope you can join us next time.'
-//               // };
-          
-//               // sgMail.send(msg);
-          
-//               // console.log("Email sent.")
-          
-//           // .catch(function (err) {
-//           //     // API call failed...
-//           //     console.log('API call failed, reason ', err);
-//           // });
-//   } else {
-//       res.status(403).end('Access forbidden');
-//       console.log("Invalid Post Request.")
-//   }
-// });
-
+  if(auth){
+    const {title, location, dateStart, dateEnd,
+      attendees
+    } = req.body
+  try{ 
+    // const user = await User.findById(req.user.id);
+    const newEvent = new Event({
+        title,
+        location,
+        dateStart,
+        dateEnd,
+        // isOrganizer: true,
+        user: req.currentUser.uid,
+        // organizer: {email: user.email, name: user.name},
+        attendees:  attendees.map(x => ({
+          email: x.email,
+          name: x.name,
+          status: x.status,
+        })),
+    });
+    
+    const event = await newEvent.save();
+    if (!event) throw Error('Something went wrong saving the event');
+    res.status(200).json(event);
+    } 
+  catch (e) {
+  res.status(400).json({ msg: e.message, success: false });
+}
+return;
+}
+return res.status(403).send('Not authorized');
+});
 
 module.exports = router;
 

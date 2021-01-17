@@ -16,14 +16,12 @@ const ItemStore = ({ auth, getItems, item }: IItemStore) => {
 
   return (
     <IonContent>
-      <IonHeader>
-        <IonToolbar>
+     <IonItem>
           <IonBadge slot="end" color="success">
           {auth!.user.points}
           </IonBadge>
           <IonTitle>Redeemable Items, Points </IonTitle>
-        </IonToolbar>
-      </IonHeader>
+      </IonItem>
       <IonGrid>
         <IonRow>
           {items.map(item => <ItemListItem 

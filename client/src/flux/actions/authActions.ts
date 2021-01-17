@@ -32,23 +32,23 @@ export const loadUser = () => async(dispatch: Function, getState: Function) => {
         // let accessToken = user
         // console.log(accessToken)
         
-        //Get mongodb userID and set as user
-        // const header = await tokenConfig();
-        // try{
-        // axios
-        // .get('/api/auth/user', header)
-        // .then(res =>
-        //   dispatch({
-        //     type: USER_LOADED,
-        //     payload: res.data
-        //   })
-        // )}
-        // catch(err) {
-        //   dispatch((err.response.data, err.response.status));
-        //   dispatch({
-        //     type: AUTH_ERROR
-        //   });
-        // };
+        // Get mongodb userID and set as user
+        const header = await tokenConfig();
+        try{
+        axios
+        .get('/api/auth/user', header)
+        .then(res =>
+          dispatch({
+            type: USER_LOADED,
+            payload: res.data
+          })
+        )}
+        catch(err) {
+          dispatch((err.response.data, err.response.status));
+          dispatch({
+            type: AUTH_ERROR
+          });
+        };
           }
       else {
         accessToken = 'five'
@@ -235,6 +235,28 @@ export const loginMicrosoft = () => async(
 
         accessToken = (<any>data).credential!.accessToken!;
         
+        const header = await tokenConfig();
+            // const uid = firebase.auth().currentUser!.uid
+              // Request body
+              // const body = JSON.stringify(_id);
+            try{
+              axios
+              .post('/api/auth/',{}, header)
+              .then(res=>
+                dispatch({
+                  type: REGISTER_SUCCESS,
+                  payload: res.data
+                }))
+            }
+            catch(err) {
+              dispatch({
+                type: REGISTER_FAIL,
+                payload:
+                    "Something went wrong, we couldn't create your account. Please try again."
+                });
+              };
+
+          
         
         // const header = await tokenConfig();
         

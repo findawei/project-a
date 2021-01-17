@@ -1,5 +1,5 @@
 import React from 'react';
-import { IonPage } from '@ionic/react';
+import { IonButtons, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import Leaderboard from '../components/Leaderboard';
 
 
@@ -9,13 +9,14 @@ const Tab2 = () => {
 
   return(
     <IonPage>
-      {/* <IonHeader>
+      <IonHeader>
         <IonToolbar>
-          <IonTitle><div className="ion-text-center">
-          Log
-          </div></IonTitle>
+          <IonButtons slot="start">
+            <IonMenuButton></IonMenuButton>
+          </IonButtons>
+          <IonTitle>Leaderboard</IonTitle>
         </IonToolbar>
-      </IonHeader> */}
+      </IonHeader>
       <Leaderboard />
     </IonPage>
   );

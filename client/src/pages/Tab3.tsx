@@ -1,5 +1,5 @@
 import React from 'react';
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 // import './Tab4.css';
 import Logout from '../components/auth/Logout';
 
@@ -9,6 +9,9 @@ const Tab3 = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
+          <IonButtons slot="start">
+            <IonMenuButton></IonMenuButton>
+          </IonButtons>
           <IonTitle>Settings</IonTitle>
         </IonToolbar>
       </IonHeader>

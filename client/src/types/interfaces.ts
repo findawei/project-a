@@ -352,6 +352,14 @@ export interface ILeaderBoard {
   };
 }
 
+export interface IMenu {
+  menuEnabled?: boolean
+}
+
+export interface IMenuReduxProps {
+  menuEnabled?: boolean
+}
+
 export interface IEventListReduxProps {
   event: IExistingEvent;
 }

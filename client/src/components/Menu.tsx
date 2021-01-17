@@ -4,15 +4,14 @@ import { RouteComponentProps, withRouter, useLocation } from 'react-router';
 import { IonContent, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonMenu, IonMenuToggle, IonToggle } from '@ionic/react';
 import { calendarOutline, hammer, moonOutline, help, informationCircleOutline, logIn, logOut, mapOutline, peopleOutline, person, personAdd } from 'ionicons/icons';
 import { connect } from 'react-redux';
+import { IMenu, IMenuReduxProps } from '../types/interfaces';
 
 // import { connect } from '../data/connect';
 // import { setDarkMode } from '../data/user/user.actions';
 
 // import './Menu.css'
 
-const Menu = ({ 
-    // darkMode, history, isAuthenticated, setDarkMode, menuEnabled 
-}) => {
+const Menu = ({ menuEnabled }:IMenu) => {
 
 const routes = {
   appPages: [
@@ -51,7 +50,6 @@ interface StateProps {
 
 // interface MenuProps extends RouteComponentProps, StateProps, DispatchProps { }
 
-
   const location = useLocation();
 
   function renderlistItems(list: Pages[]) {
@@ -69,13 +67,15 @@ interface StateProps {
 
   return (
     <IonMenu  type="overlay" 
-    // disabled={!menuEnabled} 
+    disabled={menuEnabled} 
     contentId="main">
       <IonContent forceOverscroll={false}>
+
         <IonList lines="none">
-          <IonListHeader>Conference</IonListHeader>
+          <IonListHeader>Tardy</IonListHeader>
           {renderlistItems(routes.appPages)}
         </IonList>
+
         <IonList lines="none">
           <IonListHeader>Account</IonListHeader>
           {renderlistItems(routes.loggedInPages)  
@@ -87,29 +87,15 @@ interface StateProps {
           </IonItem>
         </IonList>
         <IonList lines="none">
-          {/* <IonListHeader>Tutorial</IonListHeader> */}
-          {/* <IonItem button onClick={() => {
-            history.push('/tutorial');
-          }}>
-            <IonIcon slot="start" icon={hammer} />
-            Show Tutorial
-          </IonItem> */}
         </IonList>
       </IonContent>
     </IonMenu>
   );
 };
 
-// export default connect<{}, StateProps, {}>({
-//   mapStateToProps: (state) => ({
-//     darkMode: state.user.darkMode,
-//     isAuthenticated: state.user.isLoggedin,
-//     menuEnabled: state.data.menuEnabled
-//   }),
-//   mapDispatchToProps: ({
-//     setDarkMode
-//   }),
-//   component: withRouter(Menu)
-// })
+ const mapStateToProps = (state: IMenuReduxProps) => ({
+
+    menuEnabled: state.menuEnabled
+  });
 
 export default connect(null)(Menu)
